@@ -1,0 +1,1 @@
+export hostname="$(hostname)"

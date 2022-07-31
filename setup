@@ -1,0 +1,142 @@
+#!/usr/bin/env bash
+
+#  Copyright 2022 arcadium.dev <info@arcadium.dev>
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+# To use this tool it is assumed you have installed git, have setup
+# an ssh key with github, and cloned the dotfiles repo.
+
+declare dotfiles_dir
+dotfiles_dir="$(dirname $0)"
+declare -r dotfiles_dir
+
+source "${dotfiles_dir}/common.sh"
+
+#_____________ sudo _____________
+
+# sudo echo "${USER}         ALL=(ALL:ALL) NOPASSWD: ALL" > "/etc/sudoers.d/${USER}"
+
+#_____________ git _____________
+
+#_____________ shell _____________
+
+setup_shell() {
+  local i
+
+  for i in .bash_profile .bashrc .bash_logout; do
+    ln -sf ${dotfiles_dir}/$i ~/$i
+  done
+
+  mkdir -p ~/.rc.d
+  mkdir -p ~/.profile.d
+  mkdir -p ~/.projects.d
+  mkdir -p ~/bin
+
+  for i in ${dotfiles_dir}/.rc.d/*; do
+    ln -sf $i ~/.rc.d/$i
+  done
+  for i in ${dotfiles_dir}/.profile.d/*; do
+    ln -sf $i ~/.profile.d/$i
+  done
+  for i in ${dotfiles_dir}/.projects.d/*; do
+    ln -sf $i ~/.projects.d/$i
+  done
+  for i in ${dotfiles_dir}/bin/*; do
+    ln -sf $i ~/bin/$i
+  done
+}
+
+#_____________ brew _____________
+
+install_brew() {
+  # Only install brew on Macs.
+  if ! is_darwin; then return; fi
+
+  info "Installing brew"
+
+  # Don't install brew if it is already installed.
+  if command -v brew >/dev/null 2>&1; then
+    msg "brew already installed"
+  fi
+
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+}
+
+uninstall_brew() {
+  # Only uninstall brew on Macs.
+  if ! is_darwin; then return; fi
+
+  info "Uninstalling brew"
+
+  # Don't uninstall brew if it is already installed.
+  if ! command -v brew >/dev/null 2>&1; then
+    msg "brew already uninstalled"
+  fi
+
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+}
+
+#_____________ software _____________
+
+# direnv, rg (ripgrep), jq
+
+#_____________ go _____________
+
+# curl https://go.dev/VERSION?m=text
+
+# uname -s, uname -m
+
+#_____________ tmux _____________
+
+#_____________ vim _____________
+
+#_____________ vundle _____________
+
+#_____________ docker _____________
+
+#_____________ fly _____________
+
+#_____________ ssh _____________
+
+# For bin/agent, ensure that .ssh exists and the permissions are set to 700.
+
+#_____________ terminator _____________
+
+#_____________ fonts _____________
+
+#_____________ software updates _____________
+
+#_____________ install _____________
+
+install() {
+  setup_shell
+  install_brew
+}
+
+uninstall() {
+  uninstall_brew
+}
+
+#_____________ main _____________
+
+main() {
+  if [[ "$1" == "uninstall" ]]; then
+    uninstall
+    return $?
+  fi
+
+  install
+}
+
+main "$@"
