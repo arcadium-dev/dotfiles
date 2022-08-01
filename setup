@@ -32,12 +32,12 @@ setup_shell() {
   local i d
 
   for i in .bash_profile .bashrc; do
-    ln -sf "${dotfiles_dir}/${i}" "${HOME}/basename "${i}")"
+    ln -sf "${dotfiles_dir}/${i}" "${HOME}/${i}"
   done
 
-  mkdir -p "${HOME}/rc.d"
-  mkdir -p "${HOME}/profile.d"
-  mkdir -p "${HOME}/projects.d"
+  mkdir -p "${HOME}/.rc.d"
+  mkdir -p "${HOME}/.profile.d"
+  mkdir -p "${HOME}/.projects.d"
   mkdir -p "${HOME}/bin"
   mkdir -p "${HOME}/pkg"
   mkdir -p "${HOME}/src/arcadium.dev"
@@ -67,18 +67,18 @@ gather_user_input() {
 
   info "Gathering user information"
 
-  printf "%-60s >" "Enter you full name (e.g. Bob Jones)"
+  printf "%-45 > " "Enter you full name (e.g. Bob Jones)"
   read name
 
-  printf "%-60s >" "Enter your github email address"
+  printf "%-45s > " "Enter your github email address"
   read email
 
-  printf "%-60s >" "Enter your timezone (default: ${default_tz})"
+  printf "%-45s > " "Enter your timezone (default: ${default_tz})"
   read email
 
-  echo "export NAME=\"${name}\""   >  "${dotfiles}/.profile.d/01_user_info.sh"
-  echo "export EMAIL=\"${email}\"" >> "${dotfiles}/.profile.d/01_user_info.sh"
-  echo "export TZ=\"${tz}\""       >> "${dotfiles}/.profile.d/01_user_info.sh"
+  echo "export NAME=\"${name}\""   >  "${dotfiles_dir}/.profile.d/01_user_info.sh"
+  echo "export EMAIL=\"${email}\"" >> "${dotfiles_dir}/.profile.d/01_user_info.sh"
+  echo "export TZ=\"${tz}\""       >> "${dotfiles_dir}/.profile.d/01_user_info.sh"
 }
 
 #_____________ git _____________
