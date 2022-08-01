@@ -32,7 +32,7 @@ setup_shell() {
   local i d
 
   for i in .bash_profile .bashrc; do
-    ln -sf ${dotfiles_dir}/$i ~/$i
+    ln -sf "${dotfiles_dir}/${i}" "~/$(basename "${i}")"
   done
 
   mkdir -p ~/.rc.d
@@ -42,17 +42,17 @@ setup_shell() {
   mkdir -p ~/pkg
   mkdir -p ~/src/arcadium.dev
 
-  for i in ${dotfiles_dir}/.rc.d/*; do
-    ln -sf $i ~/.rc.d/$i
+  for i in "${dotfiles_dir}"/.rc.d/*; do
+    ln -sf "${i}" "~/.rc.d/$(basename "${i}")"
   done
-  for i in ${dotfiles_dir}/.profile.d/*; do
-    ln -sf $i ~/.profile.d/$i
+  for i in "${dotfiles_dir}"/.profile.d/*; do
+    ln -sf "${i}" "~/.profile.d/$(basename "${i}")"
   done
   for i in ${dotfiles_dir}/.projects.d/*; do
-    ln -sf $i ~/.projects.d/$i
+    ln -sf "${i}" "~/.projects.d/$(basename "${i}")"
   done
   for i in ${dotfiles_dir}/bin/*; do
-    ln -sf $i ~/bin/$i
+    ln -sf "${i}" "~/bin/$(basename "${i}")"
   done
 }
 
@@ -161,8 +161,6 @@ uninstall() {
 #_____________ main _____________
 
 main() {
-  local dir
-
   if [[ ! -d "${HOME}/.files" ]]; then
     echo "The arcadium.dev/dotfiles repo must be cloned to the ${HOME}/.files directory."
     echo ""
@@ -171,7 +169,7 @@ main() {
     exit 1
   fi
 
-  if [[ "${dir}" != "${HOME}/.files" ]]; then
+  if [[ "${dotfiles_dir}" != "${HOME}/.files" ]]; then
     echo "The arcadium.dev/dotfiles/setup script must be called from ${HOME}/.files/setup"
     exit 1
   fi
