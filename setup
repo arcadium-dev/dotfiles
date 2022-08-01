@@ -23,18 +23,12 @@ declare -r dotfiles_dir
 
 source "${dotfiles_dir}/common.sh"
 
-#_____________ sudo _____________
-
-# sudo echo "${USER}         ALL=(ALL:ALL) NOPASSWD: ALL" > "/etc/sudoers.d/${USER}"
-
-#_____________ git _____________
-
 #_____________ shell _____________
 
 setup_shell() {
-  local i
+  local i d
 
-  for i in .bash_profile .bashrc .bash_logout; do
+  for i in .bash_profile .bashrc; do
     ln -sf ${dotfiles_dir}/$i ~/$i
   done
 
@@ -42,6 +36,8 @@ setup_shell() {
   mkdir -p ~/.profile.d
   mkdir -p ~/.projects.d
   mkdir -p ~/bin
+  mkdir -p ~/pkg
+  mkdir -p ~/src/arcadium.dev
 
   for i in ${dotfiles_dir}/.rc.d/*; do
     ln -sf $i ~/.rc.d/$i
@@ -56,6 +52,36 @@ setup_shell() {
     ln -sf $i ~/bin/$i
   done
 }
+
+#_____________ user input _____________
+
+gather_user_input() {
+  if [[ -f "${dotfiles}/.profile.d/00_user_info.sh" ]]; then
+    return
+  fi
+
+  local default_tz="America/Denver"
+
+  info "Gathering user information"
+
+  printf "%-60s >" "Enter you full name (e.g. Bob Jones)"
+  read name
+
+  printf "%-60s >" "Enter your github email address"
+  read email
+
+  printf "%-60s >" "Enter your timezone (default: ${default_tz})"
+  read email
+
+  echo "export NAME=\"${name}\""   >  "${dotfiles}/.profile.d/01777777777777777777777_user_info.sh"
+  echo "export EMAIL=\"${email}\"" >> "${dotfiles}/.profile.d/00_user_info.sh"
+  echo "export TZ=\"${tz}\""       >> "${dotfiles}/.profile.d/00_user_info.sh"
+}
+
+#_____________ git _____________
+
+#_____________ sudo _____________
+# sudo echo "${USER}         ALL=(ALL:ALL) NOPASSWD: ALL" > "/etc/sudoers.d/${USER}"
 
 #_____________ brew _____________
 
@@ -121,7 +147,8 @@ uninstall_brew() {
 
 install() {
   setup_shell
-  install_brew
+  gather_user_input
+  #install_brew
 }
 
 uninstall() {

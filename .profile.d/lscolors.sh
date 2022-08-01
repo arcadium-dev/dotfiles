@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # a = black
 # b = red
 # c = green

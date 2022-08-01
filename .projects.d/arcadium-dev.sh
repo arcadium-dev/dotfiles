@@ -1,19 +1,13 @@
-if [[ "${_src_}" == "" ]]; then
-  export _src_="${HOME}/src"
-fi
-if [[ "${_github_}" == "" ]]; then
-  export _github_="${_src_}/github.com"
-fi
-
+# arcadium shutcuts
 export _arcadium_="${_src_}/arcadium.dev"
 
-# code
+# source code
 export _arcade_="${_arcadium_}/arcade"
 export _core_="${_arcadium_}/core"
 
 # deployments
-export _f2048_="${_arcadium_}/fly-2048"
 export _farcade="${_arcadium_}/fly-arcade"
+export _f2048_="${_arcadium_}/fly-2048"
 
 # dev support
 export _onboarding_="${_arcadium_}/onboarding"

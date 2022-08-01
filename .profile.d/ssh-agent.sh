@@ -18,4 +18,4 @@ add_ssh_keys() {
     fi
   done
 }
-# add_ssh_keys
+add_ssh_keys

@@ -1,4 +1,4 @@
-function g() {
+g() {
   if [[ "$1" == "" ]]; then
     return
   fi

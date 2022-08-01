@@ -1,3 +1,12 @@
+# Directories
+
+- [x] bin
+- [x] src
+- [x] pkg
+- [x] .profiles.d
+- [x] .rc.d
+- [x] .projects.d
+
 # Install brew
 
 ## Setup
