@@ -59,7 +59,7 @@ setup_shell() {
 #_____________ user input _____________
 
 gather_user_input() {
-  if [[ -f "${dotfiles_dir}/.profile.d/01_user_info.sh" ]]; then
+  if [[ -f "${HOME}/.profile.d/01_user_info.sh" ]]; then
     return
   fi
 
@@ -80,9 +80,9 @@ gather_user_input() {
   printf "%-45s > " "Enter your timezone (default: ${default_tz})"
   read tz
 
-  echo "export NAME=\"${name}\""   >  "${dotfiles_dir}/.profile.d/01_user_info.sh"
-  echo "export EMAIL=\"${email}\"" >> "${dotfiles_dir}/.profile.d/01_user_info.sh"
-  echo "export TZ=\"${tz}\""       >> "${dotfiles_dir}/.profile.d/01_user_info.sh"
+  echo "export NAME=\"${name}\""   >  "${HOME}/.profile.d/01_user_info.sh"
+  echo "export EMAIL=\"${email}\"" >> "${HOME}/.profile.d/01_user_info.sh"
+  echo "export TZ=\"${tz}\""       >> "${HOME}/.profile.d/01_user_info.sh"
 }
 
 #_____________ git _____________
