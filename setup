@@ -18,10 +18,13 @@
 # an ssh key with github, and cloned the dotfiles repo.
 
 declare dotfiles_dir
-dotfiles_dir="$(dirname $0)"
+cd "$(dirname $0)"
+dotfiles_dir="$(pwd -P)"
+cd - 2>/dev/null
 declare -r dotfiles_dir
 
 source "${dotfiles_dir}/common.sh"
+set +o noglob
 
 #_____________ shell _____________
 
@@ -167,10 +170,6 @@ main() {
     echo ""
     exit 1
   fi
-
-  cd ${dotfiles_dir}
-  dir="$(pwd -P)"
-  cd - 2>/dev/null
 
   if [[ "${dir}" != "${HOME}/.files" ]]; then
     echo "The arcadium.dev/dotfiles/setup script must be called from ${HOME}/.files/setup"
