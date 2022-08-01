@@ -71,8 +71,8 @@ gather_user_input() {
   read name
 
   printf "%-45s%-45s%-45s%-45s > " \
-    "Enter your github email address"
-    "See: https://github.com/settings/emails"
+    "Enter your github email address" \
+    "See: https://github.com/settings/emails" \
     "   | Primary email address" \
     "I.e <number>+<user>@users.noreply.github.com"
   read email
