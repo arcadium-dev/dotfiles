@@ -158,6 +158,8 @@ uninstall() {
 #_____________ main _____________
 
 main() {
+  local dir
+
   if [[ ! -d "${HOME}/.files" ]]; then
     echo "The arcadium.dev/dotfiles repo must be cloned to the ${HOME}/.files directory."
     echo ""
@@ -166,7 +168,11 @@ main() {
     exit 1
   fi
 
-  if [[ "${dotfiles_dir}" != "${HOME}/.files" ]]; then
+  cd ${dotfiles_dir}
+  dir="$(pwd -P)"
+  cd - 2>/dev/null
+
+  if [[ "${dir}" != "${HOME}/.files" ]]; then
     echo "The arcadium.dev/dotfiles/setup script must be called from ${HOME}/.files/setup"
     exit 1
   fi
