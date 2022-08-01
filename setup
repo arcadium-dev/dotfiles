@@ -67,7 +67,7 @@ gather_user_input() {
 
   info "Gathering user information"
 
-  printf "%-45 > " "Enter you full name (e.g. Bob Jones)"
+  printf "%-45s > " "Enter you full name (e.g. Bob Jones)"
   read name
 
   printf "%-45s > " "Enter your github email address"
