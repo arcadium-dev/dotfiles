@@ -32,27 +32,27 @@ setup_shell() {
   local i d
 
   for i in .bash_profile .bashrc; do
-    ln -sf "${dotfiles_dir}/${i}" "~/$(basename "${i}")"
+    ln -sf "${dotfiles_dir}/${i}" "${HOME}/basename "${i}")"
   done
 
-  mkdir -p ~/.rc.d
-  mkdir -p ~/.profile.d
-  mkdir -p ~/.projects.d
-  mkdir -p ~/bin
-  mkdir -p ~/pkg
-  mkdir -p ~/src/arcadium.dev
+  mkdir -p "${HOME}/rc.d"
+  mkdir -p "${HOME}/profile.d"
+  mkdir -p "${HOME}/projects.d"
+  mkdir -p "${HOME}/bin"
+  mkdir -p "${HOME}/pkg"
+  mkdir -p "${HOME}/src/arcadium.dev"
 
   for i in "${dotfiles_dir}"/.rc.d/*; do
-    ln -sf "${i}" "~/.rc.d/$(basename "${i}")"
+    ln -sf "${i}" "${HOME}/rc.d/$(basename "${i}")"
   done
   for i in "${dotfiles_dir}"/.profile.d/*; do
-    ln -sf "${i}" "~/.profile.d/$(basename "${i}")"
+    ln -sf "${i}" "${HOME}/profile.d/$(basename "${i}")"
   done
   for i in ${dotfiles_dir}/.projects.d/*; do
-    ln -sf "${i}" "~/.projects.d/$(basename "${i}")"
+    ln -sf "${i}" "${HOME}/projects.d/$(basename "${i}")"
   done
   for i in ${dotfiles_dir}/bin/*; do
-    ln -sf "${i}" "~/bin/$(basename "${i}")"
+    ln -sf "${i}" "${HOME}/bin/$(basename "${i}")"
   done
 }
 
