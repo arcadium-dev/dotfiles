@@ -1,4 +1,4 @@
-echo -e "\n$hostname, $(uname -msr)"
+echo -e "\n${hostname}, $(uname -msr)"
 
 if command -v tmux >/dev/null 2>&1 && tmux ls >/dev/null 2>&1; then
   echo ""

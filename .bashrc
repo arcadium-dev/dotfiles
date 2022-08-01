@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+# .bashrc is executed by bash for non-login shells
 
 load_rc() {
   local i files

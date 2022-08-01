@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+# .bash_profile is executed by bash for login shells
 
 export BASH_ENV="${HOME}/.bashrc"
 export ENV="${BASH_ENV}"

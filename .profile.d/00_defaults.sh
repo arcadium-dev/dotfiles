@@ -1,7 +1,7 @@
 set -o ignoreeof
 
-umask 0077
 shopt -s direxpand
+shopt -s checkwinsize
 
 # Editor Variables
 #
@@ -17,9 +17,3 @@ export EXINIT="set ts=${TABSTOP} sm"
 export _bin_="${HOME}/bin"
 export _pkg_="${HOME}/pkg"
 export _src_="${HOME}/src"
-
-# Default encoding
-export LC_CTYPE=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
-export LANGUAGE=en_US.UTF-8

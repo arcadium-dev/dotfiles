@@ -1,5 +1,5 @@
 echo ""
-. $HOME/bin/agent
+source "${HOME}/bin/agent"
 
 # To automatically load an existing ssh key set the 
 # ssh_keys variable.
@@ -11,10 +11,10 @@ echo ""
 add_ssh_keys() {
   local user key ssh_keys
 
-  for user in ${!ssh_keys[@]}; do
-    key=${ssh_keys[$user]}
-    if [[ -f $HOME/.ssh/$key ]] && ! grep "$user" <(ssh-add -l); then
-      ssh-add $HOME/.ssh/$key
+  for user in "${!ssh_keys[@]}"; do
+    key="${ssh_keys[$user]}"
+    if [[ -f "${HOME}/.ssh/${key}" ]] && ! grep "$user" <(ssh-add -l); then
+      ssh-add "${HOME}/.ssh/${key}"
     fi
   done
 }
