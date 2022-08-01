@@ -20,7 +20,7 @@
 declare dotfiles_dir
 cd "$(dirname $0)"
 dotfiles_dir="$(pwd -P)"
-cd - 2>/dev/null
+cd - >/dev/null 2>&1
 declare -r dotfiles_dir
 
 source "${dotfiles_dir}/common.sh"
