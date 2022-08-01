@@ -31,6 +31,8 @@ set +o noglob
 setup_shell() {
   local i d
 
+  info "Setting up bash environment"
+
   for i in .bash_profile .bashrc; do
     ln -sf "${dotfiles_dir}/${i}" "${HOME}/${i}"
   done
