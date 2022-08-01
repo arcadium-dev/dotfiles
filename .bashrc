@@ -5,7 +5,7 @@ load_rc() {
 
   LANG=C files="${HOME}/.rc.d/*.sh"
 
-  for i in "${files}"; do
+  for i in ${files}; do
     if [[ -r "${i}" ]]; then
       source "${i}"
     fi

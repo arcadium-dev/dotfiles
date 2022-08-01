@@ -12,7 +12,7 @@ load_profiles() {
 
   LANG=C files="${HOME}/.profile.d/*.sh"
 
-  for i in "${files}"; do
+  for i in ${files}; do
     if [[ -r "${i}" ]]; then
       source "${i}"
     fi
