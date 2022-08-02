@@ -8,16 +8,15 @@ source "${HOME}/bin/agent"
 #
 # where the user is embedded in the comment of the ssh key.
 #
-add_ssh_keys() {
-  local user key ssh_keys
+declare _user _key
 
-  for user in "${!ssh_keys[@]}"; do
-    key="${ssh_keys[$user]}"
-    if [[ -f "${HOME}/.ssh/${key}" ]] && ! grep "${user}" <(ssh-add -l); then
-      ssh-add "${HOME}/.ssh/${key}"
-    fi
-  done
-}
-add_ssh_keys
+for _user in "${!ssh_keys[@]}"; do
+  _key="${ssh_keys[${_user}]}"
+  if [[ -f "${HOME}/.ssh/${_key}" ]] && ! grep "${_user}" <(ssh-add -l); then
+    ssh-add "${HOME}/.ssh/${_key}"
+  fi
+done
+
+unset _user _key
 
 ssh-add -l
