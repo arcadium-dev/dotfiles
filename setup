@@ -232,12 +232,14 @@ install() {
   install_shell_environment
   gather_user_input
   install_git_config
+  install_sudoers
   #install_brew
 }
 
 uninstall() {
   uninstall_shell_environment
   uninstall_git_config
+  uninstall_sudoers
   #uninstall_brew
 }
 

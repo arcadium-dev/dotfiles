@@ -150,7 +150,7 @@ function msg() {(
 # success
 #----------------------------------------------------------------------------
 function success() {
-  echo -e "\n${GREEN}Success${CLEAR}"
+  echo -e "${GREEN}Success${CLEAR}"
   return "${SUCCESS}"
 }
 
@@ -158,7 +158,7 @@ function success() {
 # failed
 #----------------------------------------------------------------------------
 function failed() {
-  echo -e "\n${RED}Failed${CLEAR}"
+  echo -e "${RED}Failed${CLEAR}"
   exit "${FAILURE}"
 }
 
