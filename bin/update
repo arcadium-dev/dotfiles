@@ -4,9 +4,9 @@ source "${HOME}/bin/common.sh"
 
 update_go() {
   local os
-  os="$(uname)"
+  os="$(uname | tr [A-Z] [a-z])"
 
-  if [[ "${os}" != "Linux" ]]; then return; fi
+  if [[ "${os}" != "linux" ]]; then return; fi
 
   info "Updating go"
 
