@@ -34,7 +34,8 @@ update_go() {
 update_fly() {
   if command -v flyctl &>/dev/null; then
     info "Updating flyctl"
-    curl -L https://fly.io/install.sh | sh
+    curl -L https://fly.io/install.sh 2>/dev/null | sh >/dev/null 2>&1
+    flyctl version
   fi
 }
 
