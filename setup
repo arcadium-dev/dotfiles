@@ -30,16 +30,16 @@ declare os
 os="$(uname | tr [A-Z] [a-z])"
 declare -r os
 
-if [[ -f /etc/os-release ]]; then
-  source /etc/os-release
-fi
-
 declare name email github_email editor tz
 declare default_name="${NAME:-}" 
 declare default_email="${EMAIL:-}" 
 declare default_github_email="${GITHUB_EMAIL:-}" 
 declare default_editor="${EDITOR:-code}"
 declare default_tz="${TZ:-America/Denver}"
+
+if [[ -f /etc/os-release ]]; then
+  source /etc/os-release
+fi
 
 #_____________ shell environment _____________
 
@@ -100,7 +100,7 @@ gather_user_input() {
   fi
 
   printf "\n%-s\n%-50s > " \
-    "Enter you full name (e.g. Bob Jones)" \
+    "Enter you full name" \
     "  Default: '${default_name}'"
   read name
 
