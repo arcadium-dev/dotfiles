@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source "$(dirname $0)/common.sh"
+source "$${HOME}/bin/common.sh"
 
 update_go() {
   local os
