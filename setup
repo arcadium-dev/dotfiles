@@ -338,16 +338,12 @@ install_go() {
   success
 }
 
-uninstall_go() {
-  : # TODO
-}
-
 #_____________ fly _____________
 
 install_fly() {
   info "Install fly"
 
-  if [[ -f "${HOME}/bin/flyctl" ]]; then
+  if [[ -d "${HOME}/.fly" ]]; then
     msg "fly already installed, skupping..."
     return
   fi
@@ -362,21 +358,10 @@ uninstall_fly() {
   info "Removing fly"
 
   rm -f "${HOME}/bin/flyctl" "${HOME}/bin/fly"
+  rm -rf "${HOME}/.fly"
 
   success
 }
-
-#_____________ vim _____________
-
-#_____________ vundle _____________
-
-#_____________ docker _____________
-
-#  sudo usermod -a -G docker ${USER}
-
-#_____________ ssh _____________
-
-# For bin/agent, ensure that .ssh exists and the permissions are set to 700.
 
 #_____________ tmux _____________
 
@@ -474,6 +459,69 @@ uninstall_fonts() {
   success
 }
 
+#_____________ docker _____________
+
+install_docker_group() {
+  if [[ "${os}" != "linux" ]]; then return; fi
+
+  info "Setting up docker group"
+
+  if grep -q "^docker:.*${USER}" /etc/group; then
+    msg "docker group already setup, skipping..."
+    return
+  fi
+
+  if ! sudo gpasswd -a "${USER}" docker; then
+    failed
+  fi
+
+  success
+}
+
+uninstall_docker_group() {
+  if [[ "${os}" != "linux" ]]; then return; fi
+
+  info "Removing docker group"
+
+  sudo gpasswd -d "${USER}" docker
+
+  success
+}
+
+#_____________ ssh _____________
+
+install_ssh_config() {
+  info "Setting up ssh config"
+
+  mkdir -p "${HOME}/.ssh"
+  chmod -f 0700 "${HOME}"/.ssh/id_*
+  chmod -f 0644 "${HOME}"/.ssh/id_*.pub
+
+  if [[ ! -f "${HOME}/.profile.d/02_ssh_keys.sh" ]]; then
+    if [[ "${HOME}.ssh/id_ecdsa" ]]; then
+      echo "export ssh_keys=( [${email}]=\"id_edcsa\" )"
+    fi
+  fi
+
+  success
+}
+
+uninstall_ssh_config() {
+  info "Removing ssh config"
+
+  rm -f "${HOME}/.profile.d/02_ssh_keys.sh"
+
+  success
+}
+
+#_____________ vim _____________
+
+#_____________ vundle _____________
+
+# vim +PluginUpdate +qall >/dev/null 2>&1
+# vim +GoUpdateBinaries +qall >/dev/null 2>&1
+
+
 #_____________ source code _____________
 
 install_source_code() {
@@ -504,7 +552,6 @@ install_source_code() {
 
   success
 }
-
 #_____________ install _____________
 
 install() {
@@ -515,23 +562,24 @@ install() {
   install_software_packages
   install_go
   install_fly
-
   install_tmux_config
   install_terminator_config
   install_fonts
+  install_docker
+  install_ssh_config
   install_source_code
 }
 
 uninstall() {
-  uninstall_shell_environment
-  uninstall_git_config
-  uninstall_sudoers
-  # TODO: uninstall_go
-  uninstall_fly
-
-  uninstall_tmux_config
-  uninstall_terminator_config
+  uninstall_ssh_config
+  uninstall_docker
   uninstall_fonts
+  uninstall_terminator_config
+  uninstall_tmux_config
+  uninstall_fly
+  uninstall_sudoers
+  uninstall_git_config
+  uninstall_shell_environment
 }
 
 #_____________ main _____________
