@@ -467,7 +467,7 @@ install_ssh_config() {
 
   if [[ ! -f "${HOME}/.profile.d/02_ssh_keys.sh" ]]; then
     if [[ "${HOME}.ssh/id_ecdsa" ]]; then
-      echo "export ssh_keys=( [${email:-${default_email}}]=\"id_edcsa\" )"
+      echo "export ssh_keys=( [${email:-${default_email}}]=\"id_edcsa\" )" > "${HOME}/.profile.d/02_ssh_keys.sh"
     fi
   fi
 
