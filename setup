@@ -76,6 +76,8 @@ install_shell_environment() {
     ln -sf "${i}" "${HOME}/bin/$(basename "${i}")"
   done
 
+  ln -sf "${dotfiles_dir}/common.sh" "${HOME}/bin/common.sh"
+
   success
 }
 
@@ -321,6 +323,26 @@ install_software_linux_ubuntu() {
 
 #_____________ fly _____________
 
+install_fly() {
+  info "Install fly"
+
+  if [[ -f "${HOME}/bin/flyctl" ]]; then
+    msg "fly already installed, skupping..."
+    return
+  fi
+
+  curl -L https://fly.io/install.sh 2>/dev/null | sh &>/dev/null
+
+  success
+}
+
+uninstall_fly() {
+  info "Removing fly"
+
+  rm -f "${HOME}/bin/flyctl" "${HOME}/bin/fly"
+
+  success
+}
 #_____________ ssh _____________
 
 # For bin/agent, ensure that .ssh exists and the permissions are set to 700.
@@ -432,6 +454,8 @@ install() {
   install_sudoers
   install_software_packages
 
+  install_fly
+
   install_tmux_config
   install_terminator_config
   install_fonts
@@ -441,6 +465,8 @@ uninstall() {
   uninstall_shell_environment
   uninstall_git_config
   uninstall_sudoers
+
+  uninstall_fly
 
   uninstall_tmux_config
   uninstall_terminator_config
