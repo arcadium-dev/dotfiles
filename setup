@@ -58,6 +58,11 @@ install_shell_environment() {
   mkdir -p "${HOME}/pkg"
   mkdir -p "${HOME}/src/arcadium.dev"
 
+  mkdir -p "${HOME}/Desktop"
+  mkdir -p "${HOME}/Documents"
+  mkdir -p "${HOME}/Downloads"
+  mkdir -p "${HOME}/Pictures"
+
   for i in "${dotfiles_dir}"/.rc.d/*; do
     ln -sf "${i}" "${HOME}/.rc.d/$(basename "${i}")"
   done
@@ -146,6 +151,7 @@ gather_user_input() {
   echo "export EMAIL=\"${email}\""               >> "${HOME}/.profile.d/01_user_info.sh"
   echo "export GITHUB_EMAIL=\"${github_email}\"" >> "${HOME}/.profile.d/01_user_info.sh"
   echo "export EDITOR=\"${editor}\""             >> "${HOME}/.profile.d/01_user_info.sh"
+  echo "export VISUAL=\"${editor}\""             >> "${HOME}/.profile.d/01_user_info.sh"
   echo "export TZ=\"${tz}\""                     >> "${HOME}/.profile.d/01_user_info.sh"
 }
 
@@ -203,7 +209,6 @@ uninstall_sudoers() {
   success
 }
 
-
 #_____________ software _____________
 
 install_software_packages() {
@@ -217,6 +222,11 @@ install_software_packages() {
 }
 
 install_sofware_darwin() {
+  #detail "Installing xode tools"
+
+  #xcode-select --install
+  #xcode-select -p
+
   detail  "Installing brew"
 
   if command -v brew >/dev/null 2>&1; then
@@ -224,8 +234,9 @@ install_sofware_darwin() {
   fi
 
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  brew doctor
 
-  # How to update the PATH
+  # TODO: How to update the PATH
 
   detail "Update" "pulling the latest packages"
   "${dotfiles_dir}/bin/update" >/dev/null 2>&1
@@ -234,10 +245,13 @@ install_sofware_darwin() {
   local packages=(
     "bash"
     "coreutils"
+    "curl"
     "direnv"
+    "git"
     "jq"
     "ripgrep"
     "tmux"
+    "wget"
   )
 
   for p in "${packages[@]}"; do
@@ -247,7 +261,7 @@ install_sofware_darwin() {
     fi
   done
 
-  # How to change the shell
+  # TODO: How to change the shell
 
   success
 }
@@ -266,10 +280,13 @@ install_software_linux_ubuntu() {
 
   local p
   local packages=(
+    "build-essential"
     "direnv"
     "jq"
     "ripgrep"
+    "terminator"
     "tmux"
+    "wget"
   )
 
   for p in "${packages[@]}"; do

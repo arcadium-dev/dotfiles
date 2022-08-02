@@ -14,3 +14,5 @@ pathmunge /usr/local/go/bin
 pathmunge /sbin after
 pathmunge /usr/sbin after
 pathmunge /usr/local/sbin after
+
+# TODO: brew path? other mac paths?
