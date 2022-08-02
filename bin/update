@@ -6,10 +6,14 @@ update_go() {
   local os
   os="$(uname)"
 
-  if [[ "${os}" != "linux" ]]; then return; fi
+  if [[ "${os}" != "Linux" ]]; then return; fi
+
+  info "Updating go"
 
   gover="$(curl https://go.dev/VERSION?m=text 2>/dev/null)"
   if [[ -d "/usr/local/${gover}" ]]; then
+    go version
+    success
     return
   fi
 
@@ -26,7 +30,7 @@ update_go() {
   sudo tar -C /usr/local -xzf "${HOME}/Downloads/${pkg}"
   sudo mv /usr/local/go "/usr/local/${gover}"
   sudo ln -sf "/usr/local/${gover}" /usr/local/go
-  /usr/local/go/bin/go version
+  go version
 
   success
 }
