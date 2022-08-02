@@ -82,7 +82,7 @@ gather_user_input() {
   info "Gathering user information"
 
   if [[ -f "${HOME}/.profile.d/01_user_info.sh" ]]; then
-    msg "Use information already exists, skipping..."
+    msg "User information already exists, skipping..."
     return
   fi
 
@@ -149,7 +149,7 @@ install_sudoers() {
     msg "${sudoers_file} already exists, skipping..."
   fi
 
-  sudo echo "${USER} ALL=(ALL:ALL) NOPASSWD: ALL" > "${sudoers_file}"
+  sudo ( echo "${USER} ALL=(ALL:ALL) NOPASSWD: ALL" > "${sudoers_file}" )
 
   success
 }
