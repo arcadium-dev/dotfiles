@@ -600,7 +600,8 @@ versions() {
   git version
   go version
   flyctl version
-  echo -n "docker " &&  docker version
+  docker version -f "docker version {{.Client.Version}}"
+  echo "docker-compose $(docker-compose version --short)"
 }
 
 #_____________ main _____________
