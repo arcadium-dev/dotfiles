@@ -17,8 +17,6 @@ update_go() {
     return
   fi
 
-  rm -f /usr/local/go
-
   local arch="arm64"
   if [[ "$(uname -m)" == "x86_64" ]]; then
     arch="amd64"
