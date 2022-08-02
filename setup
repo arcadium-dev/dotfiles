@@ -610,7 +610,7 @@ versions() {
   flyctl version
 
   # ... sigh ...
-  docker version -f "docker version {{.Client.Version}}" | grep -v "Cannot connect" || true 
+  docker version -f "docker version {{.Client.Version}}" 2>/dev/null || true 
   echo "docker-compose $(docker-compose version --short)"
 }
 
