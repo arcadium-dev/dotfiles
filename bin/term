@@ -1,0 +1,2 @@
+#!/bin/bash
+exec terminator --profile arcadium --layout arcadium &>/dev/null & 
