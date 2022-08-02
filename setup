@@ -57,6 +57,8 @@ install_shell_environment() {
   for i in ${dotfiles_dir}/bin/*; do
     ln -sf "${i}" "${HOME}/bin/$(basename "${i}")"
   done
+
+  success
 }
 
 uninstall_shell_environment() {
@@ -64,12 +66,14 @@ uninstall_shell_environment() {
 
   rm -f "${HOME}/.bash_profile"
   rm -f "${HOME}/.bashrc"
-  rm -f "${HOME}/.rc.d"
-  rm -f "${HOME}/.profile.d"
-  rm -f "${HOME}/.projects.d"
-  rm -f "${HOME}/bin"
-  rm -f "${HOME}/pkg"
-  rm -f "${HOME}/src"
+  rm -rf "${HOME}/.rc.d"
+  rm -rf "${HOME}/.profile.d"
+  rm -rf "${HOME}/.projects.d"
+  rm -rf "${HOME}/bin"
+  rm -rf "${HOME}/pkg"
+  rm -rf "${HOME}/src"
+
+  success
 }
 
 #_____________ user input _____________
@@ -84,20 +88,20 @@ gather_user_input() {
 
   local default_tz="America/Denver"
 
-  printf "\n%-45s > " "Enter you full name (e.g. Bob Jones)"
+  printf "\n%-50s > " "Enter you full name (e.g. Bob Jones)"
   read name
 
-  printf "\\n%-45s > " "Enter your arcadium.dev email"
+  printf "\\n%-50s > " "Enter your arcadium.dev email"
   read email
 
-  printf "\n%-s\n%-s\n%-s\n%-45s > " \
+  printf "\n%-s\n%-s\n%-s\n%-50s > " \
     "Enter your github email address" \
     "  See: https://github.com/settings/emails" \
     "       Keep my email addresses private" \
     "  I.e <number>+<user>@users.noreply.github.com"
   read github_email
 
-  printf "\n%-45s > " "Enter your timezone (default: ${default_tz})"
+  printf "\n%-50s > " "Enter your timezone (default: ${default_tz})"
   read tz
 
   echo "export NAME=\"${name}\""   >  "${HOME}/.profile.d/01_user_info.sh"
@@ -121,6 +125,8 @@ install_git_config() {
   git config --global user.name "${name}"
   git config --global user.email "${github_email}"
   git config --global core.excludesfile "${HOME}/.gitignore_global"
+
+  success
 }
 
 uninstall_git_config() {
@@ -131,11 +137,38 @@ uninstall_git_config() {
 }
 
 #_____________ sudo _____________
-# sudo echo "${USER}         ALL=(ALL:ALL) NOPASSWD: ALL" > "/etc/sudoers.d/${USER}"
 
-#_____________ brew _____________
+install_sudoers() {
+  local sudoers_file="/etc/sudoers.d/${USER}"
+
+  info "Setting up ${sudoers_file}"
+
+
+  if [[ -f "${sudoers_file}" ]]; then
+    msg "${sudoers_file} already exists, skipping..."
+  fi
+
+  sudo echo "${USER} ALL=(ALL:ALL) NOPASSWD: ALL" > "${sudoers_file}"
+
+  success
+}
+
+uninstall_sudoers() {
+  info "Removing sudoers file"
+
+  sudo rm -f "/etc/sudoers.d/${USER}"
+}
+
+
+#_____________ software _____________
+
+# direnv, rg (ripgrep), jq
 
 install_brew() {
+  :
+}
+
+install_sofware_darwin() {
   # Only install brew on Macs.
   if ! is_darwin; then return; fi
 
@@ -149,7 +182,11 @@ install_brew() {
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 }
 
-uninstall_brew() {
+uninstall_software() {
+  :
+}
+
+uninstall_software_darwin() {
   # Only uninstall brew on Macs.
   if ! is_darwin; then return; fi
 
@@ -162,10 +199,6 @@ uninstall_brew() {
 
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
 }
-
-#_____________ software _____________
-
-# direnv, rg (ripgrep), jq
 
 #_____________ go _____________
 

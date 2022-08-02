@@ -1,30 +1,30 @@
 [user]
 [push]
-  default = tracking
+	default = tracking
 [color]
-  ui = auto
+	ui = auto
 [core]
-  editor = vim
-  autocrlf = false
-  filemode = false
+	editor = vim
+	autocrlf = false
+	filemode = false
 [merge]
-  tool = vimdiff
+	tool = vimdiff
 [url "git@github.com:"]
-  insteadOf = https://github.com/
+	insteadOf = https://github.com/
 [advice]
-  detachedHead=false
+	detachedHead=false
 [commit]
 	gpgsign = true
 [alias]
-  lg1 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
-  lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
-  lg = !"git lg1"
-  br = !git --no-pager branch -v && git --no-pager branch -vr
-  f = fetch --all --prune
-  del = branch -D
-  ff = pull --ff-only
-  fff = !git fetch --all --prune && git pull --ff-only
-  co = checkout
-  ignore = update-index --assume-unchanged
-  unignore = update-index --no-assume-unchanged
-  lsignore = !git ls-files -v | grep -E "^[a-z]"
+	lg1 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+	lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
+	lg = !"git lg1"
+	br = !git --no-pager branch -v && git --no-pager branch -vr
+	f = fetch --all --prune
+	del = branch -D
+	ff = pull --ff-only
+	fff = !git fetch --all --prune && git pull --ff-only
+	co = checkout
+	ignore = update-index --assume-unchanged
+	unignore = update-index --no-assume-unchanged
+	lsignore = !git ls-files -v | grep -E "^[a-z]"
