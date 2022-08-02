@@ -40,6 +40,7 @@ update_fly() {
     info "Updating flyctl"
     curl -L https://fly.io/install.sh 2>/dev/null | sh >/dev/null 2>&1
     flyctl version
+    success
   fi
 }
 
@@ -47,11 +48,13 @@ update() {
   if command -v brew &>/dev/null; then
     info "Updating brew packages"
     brew update && brew upgrade
+    success
   fi
 
   if command -v apt &>/dev/null; then
     info "Updating apt packages"
     sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y
+    success
   fi
 }
 
