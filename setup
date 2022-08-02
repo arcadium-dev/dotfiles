@@ -34,7 +34,7 @@ if [[ -f /etc/os-release ]]; then
   source /etc/os-release
 fi
 
-declare name email github_email tz
+declare name email github_email editor tz
 
 #_____________ shell environment _____________
 
@@ -109,12 +109,17 @@ gather_user_input() {
     "  I.e <number>+<user>@users.noreply.github.com"
   read github_email
 
+  printf "\n%-50s > " "Preferred editor (vim, code)"
+  read editor
+
   printf "\n%-50s > " "Enter your timezone (default: ${default_tz})"
   read tz
 
-  echo "export NAME=\"${name}\""   >  "${HOME}/.profile.d/01_user_info.sh"
-  echo "export EMAIL=\"${email}\"" >> "${HOME}/.profile.d/01_user_info.sh"
-  echo "export TZ=\"${tz}\""       >> "${HOME}/.profile.d/01_user_info.sh"
+  echo "export NAME=\"${name}\""                 >  "${HOME}/.profile.d/01_user_info.sh"
+  echo "export EMAIL=\"${email}\""               >> "${HOME}/.profile.d/01_user_info.sh"
+  echo "export GITHUB_EMAIL=\"${github_email}\"" >> "${HOME}/.profile.d/01_user_info.sh"
+  echo "export EDITOR=\"${editor}\""             >> "${HOME}/.profile.d/01_user_info.sh"
+  echo "export TZ=\"${tz}\""                     >> "${HOME}/.profile.d/01_user_info.sh"
 }
 
 #_____________ git config _____________
@@ -132,6 +137,7 @@ install_git_config() {
 
   git config --global user.name "${name}"
   git config --global user.email "${github_email}"
+  git config --global core.editor "${editor}"
   git config --global core.excludesfile "${HOME}/.gitignore_global"
 
   success
@@ -192,8 +198,31 @@ install_sofware_darwin() {
 
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
+  # How to update the PATH
+
   detail "Update" "pulling the latest packages"
   "${dotfiles_dir}/bin/update" >/dev/null 2>&1
+
+  local p
+  local packages=(
+    "bash"
+    "coreutils"
+    "direnv"
+    "jq"
+    "ripgrep"
+    "tmux"
+  )
+
+  for p in "${packages[@]}"; do
+    detail "Installing package" "${p}"
+    if ! brew install ${p} >/dev/null 2>&1; then
+      failed
+    fi
+  done
+
+  # How to change the shell
+
+  success
 }
 
 install_software_linux() {
@@ -222,6 +251,8 @@ install_software_linux_ubuntu() {
       failed
     fi
   done
+
+  success
 }
 
 #_____________ go _____________
