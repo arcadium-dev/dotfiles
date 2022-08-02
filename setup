@@ -90,6 +90,9 @@ uninstall_shell_environment() {
   rm -rf "${HOME}/.profile.d"
   rm -rf "${HOME}/.projects.d"
   rm -rf "${HOME}/bin"
+
+  # ... sigh ...
+  chmod -R u+x "${HOME}/pkg"
   rm -rf "${HOME}/pkg"
 
   success
