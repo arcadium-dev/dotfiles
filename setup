@@ -317,18 +317,29 @@ install_go() {
     return
   fi
 
+  if ! type "install_go_${os}" >/dev/null 2>&1; then
+    die "Unsupported os: ${os}"
+  fi
+
+  "install_go_${os}"
+}
+
+install_go_linux() {
   local gover="$(curl https://go.dev/VERSION?m=text)"
   local arch="arm64"
   if [[ "$(uname -m)" == "x86_64" ]]; then
     arch="amd64"
   fi
-  local pkg="${gover}.${os}-${arch}.tar.gz"
+  local tarball="${gover}.${os}-${arch}.tar.gz"
 
-  curl -sSL "https://go.dev/dl/${pkg}" --output "${HOME}/Downloads/${pkg}" 
+  curl -sSL "https://go.dev/dl/${pkg}" --output "${HOME}/Downloads/${pkg}" >/dev/null 2>&1
   sudo rm -f /usr/local/go
   sudo tar -C /usr/local -xzf "${HOME}/Downloads/${pkg}"
   sudo mv /usr/local/go "/usr/local/${gover}"
   sudo ln -sf "/usr/local/${gover}" /usr/local/go
+  /usr/local/go/bin/go version
+
+  success
 }
 
 
