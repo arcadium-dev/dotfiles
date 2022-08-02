@@ -283,6 +283,7 @@ install_software_linux_ubuntu() {
 
   local p
   local packages=(
+    "apt-file"
     "build-essential"
     "direnv"
     "docker.io"
@@ -328,9 +329,31 @@ install_software_linux_ubuntu() {
 
 #_____________ terminator _____________
 
-#_____________ fonts _____________
+install_terminator_config() {
+  if [[ "${os}" != "linux" ]]; then return; fi
 
-#_____________ software updates _____________
+  info "Installing terminator config"
+
+  mkdir -p "${HOME}/.config/terminator"
+  #mkdir -p ~"${HOME}/.gnome/apps"
+
+  ln -sf "${dotfiles_dir}/.config/terminator/config" "${HOME}/.config/terminator/config"
+  #ln -sf "${dotfiles_dir}/.files/.gnome/apps/terminator.desktop" "${HOME}/.gnome/apps/terminator.desktop"
+
+  success
+}
+
+uninstall_terminator_config() {
+  if [[ "${os}" != "linux" ]]; then return; fi
+
+  info "Installing terminator config"
+
+  rm -f "${HOME}/.config/terminator"
+
+  success
+}
+
+#_____________ fonts _____________
 
 #_____________ install _____________
 
@@ -340,12 +363,16 @@ install() {
   install_git_config
   install_sudoers
   install_software_packages
+
+  install_terminator_config
 }
 
 uninstall() {
   uninstall_shell_environment
   uninstall_git_config
   uninstall_sudoers
+
+  uninstall_terminator_config
 }
 
 #_____________ main _____________
