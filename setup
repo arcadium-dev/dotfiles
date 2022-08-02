@@ -499,6 +499,7 @@ install() {
   install_git_config
   install_sudoers
   install_software_packages
+  install_go
 
   install_fly
 
@@ -512,6 +513,7 @@ uninstall() {
   uninstall_shell_environment
   uninstall_git_config
   uninstall_sudoers
+  #uninstall_go
 
   uninstall_fly
 
