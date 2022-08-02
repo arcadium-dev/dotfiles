@@ -309,7 +309,23 @@ install_software_linux_ubuntu() {
 
 #_____________ go _____________
 
-# curl https://go.dev/VERSION?m=text
+install_go() {
+  info "Installing go"
+
+  if [[ -f /usr/local/go ]]; then
+    msg "go already installed, skipping..."
+    return
+  fi
+
+  local gover="curl https://go.dev/VERSION?m=text"
+  local arch="arm64"
+  if [[ "$(uname -m)" == "x86_64" ]]; then
+    arch="amd64"
+  fi
+
+  curl -O "${HOME}/Downloads" https://go.dev/dl/go${gover}.${os}-${arch}.tar.gz
+}
+
 
 # uname -s, uname -m
 
