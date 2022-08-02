@@ -253,6 +253,7 @@ install_sofware_darwin() {
     "curl"
     "direnv"
     "git"
+    "go"
     "jq"
     "ripgrep"
     "tmux"
@@ -310,21 +311,17 @@ install_software_linux_ubuntu() {
 #_____________ go _____________
 
 install_go() {
+  if [[ "${os}" != "linux" ]]; then return; fi
+
   info "Installing go"
 
-  if [[ -f /usr/local/go ]]; then
+  local gover="$(curl https://go.dev/VERSION?m=text)"
+
+  if [[ -f "/usr/local/${gover}" ]]; then
     msg "go already installed, skipping..."
     return
   fi
 
-  if ! type "install_go_${os}" >/dev/null 2>&1; then
-    die "Unsupported os: ${os}"
-  fi
-
-  "install_go_${os}"
-}
-
-install_go_linux() {
   local gover="$(curl https://go.dev/VERSION?m=text)"
   local arch="arm64"
   if [[ "$(uname -m)" == "x86_64" ]]; then
@@ -438,7 +435,7 @@ uninstall_terminator_config() {
 install_fonts() {
   info "Installing fonts"
 
-  if [[ "${os}" == "Darwin" ]]; then
+  if [[ "${os}" == "darwin" ]]; then
     if ! cp -f "${HOME}"/.files/.fonts/* "${HOME}/Library/Fonts/"; then
       failed
     fi
@@ -467,7 +464,7 @@ install_fonts() {
 }
 
 uninstall_fonts() {
-  if [[ "${os}" == "Darwin" ]]; then return; fi
+  if [[ "${os}" == "darwin" ]]; then return; fi
 
   info "Removing fonts"
 

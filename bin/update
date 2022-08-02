@@ -2,19 +2,51 @@
 
 source "$(dirname $0)/common.sh"
 
-# update fly
-if command -v flyctl &>/dev/null; then
-  info "Updating flyctl"
-  curl -L https://fly.io/install.sh | sh
-fi
+update_go() {
+  if [[ "${os}" != "linux" ]]; then return; fi
 
-# update everything else
-if command -v brew &>/dev/null; then
-  info "Updating brew packages"
-  brew update && brew upgrade
-fi
+  gover="$(curl https://go.dev/VERSION?m=text)"
+  if [[ -d "/usr/local/${gover}" ]]; then
+    return
+  fi
 
-if command -v apt &>/dev/null; then
-  info "Updating apt packages"
-  sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y
-fi
+  rm -f /usr/local/go
+
+  local arch="arm64"
+  if [[ "$(uname -m)" == "x86_64" ]]; then
+    arch="amd64"
+  fi
+  local tarball="${gover}.${os}-${arch}.tar.gz"
+
+  curl -sSL "https://go.dev/dl/${pkg}" --output "${HOME}/Downloads/${pkg}" >/dev/null 2>&1
+  sudo rm -f /usr/local/go
+  sudo tar -C /usr/local -xzf "${HOME}/Downloads/${pkg}"
+  sudo mv /usr/local/go "/usr/local/${gover}"
+  sudo ln -sf "/usr/local/${gover}" /usr/local/go
+  /usr/local/go/bin/go version
+
+  success
+}
+
+update_fly() {
+  if command -v flyctl &>/dev/null; then
+    info "Updating flyctl"
+    curl -L https://fly.io/install.sh | sh
+  fi
+}
+
+update() {
+  if command -v brew &>/dev/null; then
+    info "Updating brew packages"
+    brew update && brew upgrade
+  fi
+
+  if command -v apt &>/dev/null; then
+    info "Updating apt packages"
+    sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y
+  fi
+}
+
+update_go
+update_fly
+update
