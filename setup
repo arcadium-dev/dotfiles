@@ -26,13 +26,14 @@ declare -r dotfiles_dir
 source "${dotfiles_dir}/common.sh"
 set +o noglob
 
-#_____________ shell _____________
+declare name email github_email tz
 
-setup_shell() {
-  local i d
+#_____________ shell environment _____________
 
+install_shell_environment() {
   info "Setting up bash environment"
 
+  local i d
   for i in .bash_profile .bashrc; do
     ln -sf "${dotfiles_dir}/${i}" "${HOME}/${i}"
   done
@@ -58,26 +59,43 @@ setup_shell() {
   done
 }
 
+uninstall_shell_environment() {
+  info "Removing shell environment"
+
+  rm -f "${HOME}/.bash_profile"
+  rm -f "${HOME}/.bashrc"
+  rm -f "${HOME}/.rc.d"
+  rm -f "${HOME}/.profile.d"
+  rm -f "${HOME}/.projects.d"
+  rm -f "${HOME}/bin"
+  rm -f "${HOME}/pkg"
+  rm -f "${HOME}/src"
+}
+
 #_____________ user input _____________
 
 gather_user_input() {
+  info "Gathering user information"
+
   if [[ -f "${HOME}/.profile.d/01_user_info.sh" ]]; then
+    msg "Use information already exists, skipping..."
     return
   fi
 
   local default_tz="America/Denver"
 
-  info "Gathering user information"
-
   printf "\n%-45s > " "Enter you full name (e.g. Bob Jones)"
   read name
+
+  printf "\\n%-45s > " "Enter your arcadium.dev email"
+  read email
 
   printf "\n%-s\n%-s\n%-s\n%-45s > " \
     "Enter your github email address" \
     "  See: https://github.com/settings/emails" \
     "       Keep my email addresses private" \
     "  I.e <number>+<user>@users.noreply.github.com"
-  read email
+  read github_email
 
   printf "\n%-45s > " "Enter your timezone (default: ${default_tz})"
   read tz
@@ -87,7 +105,30 @@ gather_user_input() {
   echo "export TZ=\"${tz}\""       >> "${HOME}/.profile.d/01_user_info.sh"
 }
 
-#_____________ git _____________
+#_____________ git config _____________
+
+install_git_config() {
+  info "Setting up .gitconfig"
+
+  if [[ -f "${HOME}/.gitconfig" ]]; then
+    msg ".gitconfig already exists, skipping..."
+    return
+  fi
+
+  cp -f  "${dotfiles_dir}/.gitconfig" "${HOME}/.gitconfig"
+  ln -sf "${dotfiles_dir}/.gitignore_global" "${HOME}/.gitignore_global"
+
+  git config --global user.name "${name}"
+  git config --global user.email "${github_email}"
+  git config --global core.excludesfile "${HOME}/.gitignore_global"
+}
+
+uninstall_git_config() {
+  info "Removing git config"
+
+  rm -f "${HOME}/.gitconfig"
+  rm -f "${HOME}/.gitignore_global"
+}
 
 #_____________ sudo _____________
 # sudo echo "${USER}         ALL=(ALL:ALL) NOPASSWD: ALL" > "/etc/sudoers.d/${USER}"
@@ -155,13 +196,16 @@ uninstall_brew() {
 #_____________ install _____________
 
 install() {
-  setup_shell
+  install_shell_environment
   gather_user_input
+  install_git_config
   #install_brew
 }
 
 uninstall() {
-  uninstall_brew
+  uninstall_shell_environment
+  uninstall_git_config
+  #uninstall_brew
 }
 
 #_____________ main _____________
