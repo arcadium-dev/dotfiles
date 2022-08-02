@@ -53,15 +53,18 @@ update_vundle() {
 
   info "Updating vundle"
 
-  detail "updte" "plugins"
-  if ! vim +PluginUpdate +qall >/dev/null 2>&1; then
-    failed
-  fi
+  local c
+  local commands=(
+    "PluginUpdate"
+    "GoUpdateBinaries"
+  )
 
-  detail "update" "go binaries"
-  if ! vim +GoUpdateBinaries +qall >/dev/null 2>&1; then
-    failed
-  fi
+  for c in "${commands[@]}"; do
+    detail "Update" "${c}"
+    if ! vim +"${c}" +qall >/dev/null 2>&1; then
+      failed
+    fi
+  done
 
   success
 }

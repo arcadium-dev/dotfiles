@@ -507,15 +507,18 @@ install_vundle() {
     failed
   fi
 
-  detail "Install" "plugins"
-  if ! vim +PluginInstall +qall >/dev/null 2>&1; then
-    failed
-  fi
+  local c
+  local commands=(
+    "PluginInstall"
+    "GoInstallBinaries"
+  )
 
-  detail "Install" "go binaries"
-  if ! vim +GoInstallBinaries +qall >/dev/null 2>&1; then
-    failed
-  fi
+  for c in "${commands[@]}"; do
+    detail "Install" "${c}"
+    if ! vim +"${c}" +qall >/dev/null 2>&1; then
+      failed
+    fi
+  done
 
   success
 }
