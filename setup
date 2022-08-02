@@ -327,7 +327,7 @@ install_go() {
   if [[ "$(uname -m)" == "x86_64" ]]; then
     arch="amd64"
   fi
-  local tarball="${gover}.${os}-${arch}.tar.gz"
+  local pkg="${gover}.${os}-${arch}.tar.gz"
 
   curl -sSL "https://go.dev/dl/${pkg}" --output "${HOME}/Downloads/${pkg}" >/dev/null 2>&1
   sudo rm -f /usr/local/go
