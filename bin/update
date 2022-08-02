@@ -3,6 +3,9 @@
 source "$(dirname $0)/common.sh"
 
 update_go() {
+  local os
+  os="$(uname)"
+
   if [[ "${os}" != "linux" ]]; then return; fi
 
   gover="$(curl https://go.dev/VERSION?m=text 2>/dev/null)"
