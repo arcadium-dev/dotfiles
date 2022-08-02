@@ -465,7 +465,7 @@ install_source_code() {
     fi
 
     detail "workspace" "${r}"
-    git clone -C "${arcadium}" "git@github.com:arcadium-dev/${r}"
+    git -C "${arcadium}" clone "git@github.com:arcadium-dev/${r}"
     direnv allow "${arcadium}/${r}"
   done
 }
