@@ -134,6 +134,8 @@ uninstall_git_config() {
 
   rm -f "${HOME}/.gitconfig"
   rm -f "${HOME}/.gitignore_global"
+
+  success
 }
 
 #_____________ sudo _____________
@@ -157,6 +159,8 @@ uninstall_sudoers() {
   info "Removing sudoers file"
 
   sudo rm -f "/etc/sudoers.d/${USER}"
+
+  success
 }
 
 
