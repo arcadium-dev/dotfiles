@@ -13,9 +13,11 @@ add_ssh_keys() {
 
   for user in "${!ssh_keys[@]}"; do
     key="${ssh_keys[$user]}"
-    if [[ -f "${HOME}/.ssh/${key}" ]] && ! grep "$user" <(ssh-add -l); then
+    if [[ -f "${HOME}/.ssh/${key}" ]] && ! grep "${user}" <(ssh-add -l); then
       ssh-add "${HOME}/.ssh/${key}"
     fi
   done
 }
 add_ssh_keys
+
+ssh-add -l
