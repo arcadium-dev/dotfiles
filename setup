@@ -103,11 +103,17 @@ gather_user_input() {
     "Enter you full name" \
     "  Default: '${default_name}'"
   read name
+  if [[ "${name}" == "" ]]; then
+    name="${default_name}"
+  fi
 
   printf "\n%-s\n%-s\n> " \
     "Enter your arcadium.dev email" \
     "  Default: '${default_email}'"
   read email
+  if [[ "${email}" == "" ]]; then
+    name="${default_email}"
+  fi
 
   printf "\n%-s\n%-s\n%-s\n%-s\n%-s\n> " \
     "Enter your github email address" \
@@ -116,16 +122,25 @@ gather_user_input() {
     "  I.e <number>+<user>@users.noreply.github.com" \
     "  Default: '${default_github_email}"
   read github_email
+  if [[ "${github_email}" == "" ]]; then
+    name="${default_github_email}"
+  fi
 
   printf "\n%-s\n%-s\n> " \
     "Preferred editor (vim, code)" \
     "  Default: ${default_editor}"
   read editor
+  if [[ "${editor}" == "" ]]; then
+    name="${default_editor}"
+  fi
 
   printf "\n%-s\n%-s\n> " \
     "Enter your timezone" \
     "  Default: ${default_tz}"
   read tz
+  if [[ "${tz}" == "" ]]; then
+    name="${default_tz}"
+  fi
 
   echo "export NAME=\"${name}\""                 >  "${HOME}/.profile.d/01_user_info.sh"
   echo "export EMAIL=\"${email}\""               >> "${HOME}/.profile.d/01_user_info.sh"
