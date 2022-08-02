@@ -145,8 +145,7 @@ install_sudoers() {
 
   info "Setting up ${sudoers_file}"
 
-
-  if [[ -f "${sudoers_file}" ]]; then
+  if sudo -n test -f "${sudoers_file}" >/dev/null 2>&1; then
     msg "${sudoers_file} already exists, skipping..."
   fi
 
