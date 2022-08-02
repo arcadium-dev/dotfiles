@@ -338,16 +338,9 @@ install_go() {
   success
 }
 
-
-# uname -s, uname -m
-
-#_____________ vim _____________
-
-#_____________ vundle _____________
-
-#_____________ docker _____________
-
-#  sudo usermod -a ^C docker ${USER}
+uninstall_go() {
+  : # TODO
+}
 
 #_____________ fly _____________
 
@@ -372,6 +365,15 @@ uninstall_fly() {
 
   success
 }
+
+#_____________ vim _____________
+
+#_____________ vundle _____________
+
+#_____________ docker _____________
+
+#  sudo usermod -a -G docker ${USER}
+
 #_____________ ssh _____________
 
 # For bin/agent, ensure that .ssh exists and the permissions are set to 700.
@@ -512,7 +514,6 @@ install() {
   install_sudoers
   install_software_packages
   install_go
-
   install_fly
 
   install_tmux_config
@@ -525,8 +526,7 @@ uninstall() {
   uninstall_shell_environment
   uninstall_git_config
   uninstall_sudoers
-  #uninstall_go
-
+  # TODO: uninstall_go
   uninstall_fly
 
   uninstall_tmux_config
