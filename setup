@@ -99,17 +99,17 @@ gather_user_input() {
     return
   fi
 
-  printf "\n%-s\n%-50s > " \
+  printf "\n%-s\n%-s\n> " \
     "Enter you full name" \
     "  Default: '${default_name}'"
   read name
 
-  printf "\n%-s\n%-50s > " \
+  printf "\n%-s\n%-s\n> " \
     "Enter your arcadium.dev email" \
     "  Default: '${default_email}'"
   read email
 
-  printf "\n%-s\n%-s\n%-s\n%-s\n%-50s > " \
+  printf "\n%-s\n%-s\n%-s\n%-s\n%-s\n> " \
     "Enter your github email address" \
     "  See: https://github.com/settings/emails" \
     "       Keep my email addresses private" \
@@ -117,12 +117,12 @@ gather_user_input() {
     "  Default: '${default_github_email}"
   read github_email
 
-  printf "\n%-s\n%-50s > " \
+  printf "\n%-s\n%-s\n> " \
     "Preferred editor (vim, code)" \
     "  Default: ${default_editor}"
   read editor
 
-  printf "\n%-s\n%-50s > " \
+  printf "\n%-s\n%-s\n> " \
     "Enter your timezone" \
     "  Default: ${default_tz}"
   read tz
