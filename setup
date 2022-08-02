@@ -31,11 +31,11 @@ os="$(uname | tr [A-Z] [a-z])"
 declare -r os
 
 declare name email github_email editor tz
-declare default_name="${NAME:-}" 
-declare default_email="${EMAIL:-}" 
-declare default_github_email="${GITHUB_EMAIL:-}" 
-declare default_editor="${EDITOR:-code}"
-declare default_tz="${TZ:-America/Denver}"
+declare -r default_name="${NAME:-}" 
+declare -r default_email="${EMAIL:-}" 
+declare -r default_github_email="${GITHUB_EMAIL:-}" 
+declare -r default_editor="${EDITOR:-code}"
+declare -r default_tz="${TZ:-America/Denver}"
 
 if [[ -f /etc/os-release ]]; then
   source /etc/os-release
@@ -112,7 +112,7 @@ gather_user_input() {
     "  Default: '${default_email}'"
   read email
   if [[ "${email}" == "" ]]; then
-    name="${default_email}"
+    email="${default_email}"
   fi
 
   printf "\n%-s\n%-s\n%-s\n%-s\n%-s\n> " \
@@ -123,7 +123,7 @@ gather_user_input() {
     "  Default: '${default_github_email}"
   read github_email
   if [[ "${github_email}" == "" ]]; then
-    name="${default_github_email}"
+    github_email="${default_github_email}"
   fi
 
   printf "\n%-s\n%-s\n> " \
@@ -131,7 +131,7 @@ gather_user_input() {
     "  Default: ${default_editor}"
   read editor
   if [[ "${editor}" == "" ]]; then
-    name="${default_editor}"
+    editor="${default_editor}"
   fi
 
   printf "\n%-s\n%-s\n> " \
@@ -139,7 +139,7 @@ gather_user_input() {
     "  Default: ${default_tz}"
   read tz
   if [[ "${tz}" == "" ]]; then
-    name="${default_tz}"
+    tz="${default_tz}"
   fi
 
   echo "export NAME=\"${name}\""                 >  "${HOME}/.profile.d/01_user_info.sh"
