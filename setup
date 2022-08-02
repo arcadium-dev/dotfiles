@@ -608,7 +608,9 @@ versions() {
   git version
   go version
   flyctl version
-  docker version -f "docker version {{.Client.Version}}" || true 
+
+  # ... sigh ...
+  docker version -f "docker version {{.Client.Version}}" | grep -v "Cannot connect" || true 
   echo "docker-compose $(docker-compose version --short)"
 }
 
