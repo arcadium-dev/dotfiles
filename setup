@@ -122,7 +122,8 @@ gather_user_input() {
     "  Default: ${default_editor}"
   read editor
 
-  printf "\n%-s\n-50s > " "Enter your timezone" \
+  printf "\n%-s\n%-50s > " \
+    "Enter your timezone" \
     "  Default: ${default_tz}"
   read tz
 
