@@ -173,7 +173,7 @@ uninstall_sudoers() {
 
 #_____________ software _____________
 
-install_software_packges() {
+install_software_packages() {
   info "Installing software packages"
 
   if ! type "install_software_${os}" >/dev/null 2>&1; then
