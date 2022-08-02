@@ -91,7 +91,6 @@ uninstall_shell_environment() {
   rm -rf "${HOME}/.projects.d"
   rm -rf "${HOME}/bin"
   rm -rf "${HOME}/pkg"
-  rm -rf "${HOME}/src"
 
   success
 }
@@ -465,9 +464,15 @@ install_source_code() {
     fi
 
     detail "workspace" "${r}"
-    git -C "${arcadium}" clone "git@github.com:arcadium-dev/${r}"
-    direnv allow "${arcadium}/${r}"
+    if ! git -C "${arcadium}" clone "git@github.com:arcadium-dev/${r}" >/dev/null 2>&1; then
+      failed
+    fi
+    if !  direnv allow "${arcadium}/${r}"; then
+      failed
+    fi
   done
+
+  success
 }
 
 #_____________ install _____________
