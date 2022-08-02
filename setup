@@ -282,6 +282,8 @@ install_software_linux_ubuntu() {
   local packages=(
     "build-essential"
     "direnv"
+    "docker.io"
+    "docker-compose"
     "jq"
     "ripgrep"
     "terminator"
