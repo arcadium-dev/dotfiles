@@ -1,4 +1,4 @@
-export TMUX_TMPDIR="${HOME}/.tmux
+export TMUX_TMPDIR="${HOME}/.tmux"
 
 set_title() {
   local title="$@"
