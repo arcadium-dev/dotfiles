@@ -318,7 +318,7 @@ install_go() {
   local gover="$(curl https://go.dev/VERSION?m=text 2>/dev/null)"
 
   if [[ -d "/usr/local/${gover}" ]]; then
-    msg "go already installed, skipping..."
+    go version
     return
   fi
 
@@ -344,7 +344,7 @@ install_fly() {
   info "Install fly"
 
   if [[ -d "${HOME}/.fly" ]]; then
-    msg "fly already installed, skupping..."
+    flyctl version
     return
   fi
 
