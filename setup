@@ -216,17 +216,17 @@ uninstall_sudoers() {
 
 #_____________ software _____________
 
-install_software_packages() {
+setup_software_packages() {
   info "Installing software packages"
 
-  if ! type "install_software_${os}" >/dev/null 2>&1; then
+  if ! type "setup_software_${os}" >/dev/null 2>&1; then
     die "Unsupported os: ${os}"
   fi
 
-  "install_software_${os}"
+  "setup_software_${os}"
 }
 
-install_sofware_darwin() {
+setup_sofware_darwin() {
   #detail "Installing xode tools"
 
   #xcode-select --install
@@ -272,15 +272,15 @@ install_sofware_darwin() {
   success
 }
 
-install_software_linux() {
-  if ! type "install_software_linux_${ID}" >/dev/null 2>&1; then
+setup_software_linux() {
+  if ! type "setup_software_linux_${ID}" >/dev/null 2>&1; then
     die "Unsupported distro: ${ID}"
   fi
 
-  "install_software_linux_${ID}"
+  "setup_software_linux_${ID}"
 }
 
-install_software_linux_ubuntu() {
+setup_software_linux_ubuntu() {
   detail "Update" "pulling the latest packages"
   "${dotfiles_dir}/bin/update" >/dev/null 2>&1
 
@@ -458,31 +458,38 @@ uninstall_docker_group() {
 
 #_____________ ssh _____________
 
-install_ssh_config() {
-  info "Setting up ssh config"
+setup_ssh() {
+  info "Setting up ssh"
 
   mkdir -p "${HOME}/.ssh"
   chmod -f 0700 "${HOME}"/.ssh/id_*
   chmod -f 0644 "${HOME}"/.ssh/id_*.pub
 
-  if [[ ! -f "${HOME}/.profile.d/02_ssh_keys.sh" ]]; then
-    if [[ "${HOME}.ssh/id_ecdsa" ]]; then
-      echo "declare -Arx ssh_keys=( ['${email:-${default_email}}']='id_edcsa' )" > "${HOME}/.profile.d/02_ssh_keys.sh"
-    fi
-  fi
-
-  success
-}
-
-uninstall_ssh_config() {
-  info "Removing ssh config"
-
-  rm -f "${HOME}/.profile.d/02_ssh_keys.sh"
-
   success
 }
 
 #_____________ vim _____________
+
+install_vim() {
+  info "Setup vim config"
+
+  mkdir -p "${HOME}/.vim/colors"
+  mkdir -p "${HOME}/.vim/swapfiles"
+
+  ln -sf "${dotfiles_dir}/.vimrc" "${HOME}/.vimrc"
+  ln -sf "${dotfiles_dir}/.vim/colors/arcadium.vim" "${HOME}/vim/colors/arcadium.vim"
+
+  success
+}
+
+uninstall_vim() {
+  info "Removing vim config"
+
+  rm -rf "${HOME}/.vim"
+  rm -f "${HOME}/.vimrc"
+
+  success
+}
 
 #_____________ vundle _____________
 
@@ -520,6 +527,7 @@ install_source_code() {
 
   success
 }
+
 #_____________ install _____________
 
 install() {
@@ -527,20 +535,20 @@ install() {
   gather_user_input
   install_git_config
   install_sudoers
-  install_software_packages
+  setup_software_packages
   install_fly
   install_tmux_config
   install_terminator_config
   install_fonts
   install_docker_group
-  install_ssh_config
+  setup_ssh
+  install_vim
   install_source_code
 
   versions
 }
 
 uninstall() {
-  uninstall_ssh_config
   uninstall_docker_group
   uninstall_fonts
   uninstall_terminator_config
