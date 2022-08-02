@@ -2,6 +2,19 @@
 
 source "${HOME}/bin/common.sh"
 
+update_fly() {
+  if ! command -v flyctl &>/dev/null; then
+    return
+  fi
+
+  info "Updating flyctl"
+
+  curl -L https://fly.io/install.sh 2>/dev/null | sh >/dev/null 2>&1
+  flyctl version
+
+  success
+}
+
 update_go() {
   local os
   os="$(uname | tr [A-Z] [a-z])"
@@ -33,29 +46,52 @@ update_go() {
   success
 }
 
-update_fly() {
-  if command -v flyctl &>/dev/null; then
-    info "Updating flyctl"
-    curl -L https://fly.io/install.sh 2>/dev/null | sh >/dev/null 2>&1
-    flyctl version
-    success
+update_vundle() {
+  if [[ ! -d "${HOME}/.vim/bundle/Vundle.vim" ]]; then
+    return
   fi
+
+  info "Updating vundle"
+
+  detail "updte" "plugins"
+  if ! vim +PluginUpdate +qall >/dev/null 2>&1; then
+    failed
+  fi
+
+  detail "update" "go binaries"
+  if ! vim +GoUpdateBinaries +qall >/dev/null 2>&1; then
+    failed
+  fi
+
+  success
 }
 
-update() {
-  if command -v brew &>/dev/null; then
-    info "Updating brew packages"
-    brew update && brew upgrade
-    success
+update_brew() {
+  if ! command -v brew &>/dev/null; then
+    return
   fi
 
-  if command -v apt &>/dev/null; then
-    info "Updating apt packages"
-    sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y
-    success
-  fi
+  info "Updating brew packages"
+
+  brew update && brew upgrade
+
+  success
 }
 
-update_go
+update_apt() {
+  if ! command -v apt &>/dev/null; then
+    return
+  fi
+
+  info "Updating apt packages"
+
+  sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y
+
+  success
+}
+
 update_fly
-update
+update_go
+update_vundle
+update_brew
+update_apt

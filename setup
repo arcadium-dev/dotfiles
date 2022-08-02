@@ -477,7 +477,7 @@ install_vim() {
   mkdir -p "${HOME}/.vim/swapfiles"
 
   ln -sf "${dotfiles_dir}/.vimrc" "${HOME}/.vimrc"
-  ln -sf "${dotfiles_dir}/.vim/colors/arcadium.vim" "${HOME}/vim/colors/arcadium.vim"
+  ln -sf "${dotfiles_dir}/.vim/colors/arcadium.vim" "${HOME}/.vim/colors/arcadium.vim"
 
   success
 }
@@ -493,8 +493,40 @@ uninstall_vim() {
 
 #_____________ vundle _____________
 
-# vim +PluginUpdate +qall >/dev/null 2>&1
-# vim +GoUpdateBinaries +qall >/dev/null 2>&1
+install_vundle() {
+  info "Installing vundle"
+
+  if [[ -d "${HOME}/.vim/bundle/Vundle.vim" ]]; then
+    msg "vundle already installed, skipping..."
+    return
+  fi
+
+  mkdir -p "${HOME}/.vim/bundle"
+
+  if ! git clone https://github.com/VundleVim/Vundle.vim.git "${HOME}/.vim/bundle/Vundle.vim" >/dev/null 2>&1; then
+    failed
+  fi
+
+  detail "install" "plugins"
+  if ! vim +PluginInstall +qall >/dev/null 2>&1; then
+    failed
+  fi
+
+  detail "install" "go binaries"
+  if ! vim +GoInstallBinaries +qall >/dev/null 2>&1; then
+    failed
+  fi
+
+  success
+}
+
+uninstall_vundle() {
+  info "Removing vundle"
+
+  rm -rf "${HOME}/.vim/bundle"
+
+  success
+}
 
 
 #_____________ source code _____________
@@ -543,12 +575,15 @@ install() {
   install_docker_group
   setup_ssh
   install_vim
+  install_vundle
   install_source_code
 
   versions
 }
 
 uninstall() {
+  uninstall_vundle
+  uninstall_vim
   uninstall_docker_group
   uninstall_fonts
   uninstall_terminator_config
