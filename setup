@@ -606,7 +606,7 @@ versions() {
   git version
   go version
   flyctl version
-  docker version -f "docker version {{.Client.Version}}"
+  docker version -f "docker version {{.Client.Version}}" || true 
   echo "docker-compose $(docker-compose version --short)"
 }
 
