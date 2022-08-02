@@ -173,10 +173,10 @@ uninstall_sudoers() {
 
 #_____________ software _____________
 
-install_software_pacakges() {
+install_software_packges() {
   info "Installing software packages"
 
-  if ! type "install_software_${os}"; then
+  if ! type "install_software_${os}" >/dev/null 2>&1; then
     die "Unsupported os: ${os}"
   fi
 
@@ -193,11 +193,11 @@ install_sofware_darwin() {
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
   detail "Update" "pulling the latest packages"
-  "${dotfiles_dir}/bin/update"
+  "${dotfiles_dir}/bin/update" >/dev/null 2>&1
 }
 
 install_software_linux() {
-  if ! type "install_software_linux_${ID}"; then
+  if ! type "install_software_linux_${ID}" >/dev/null 2>&1; then
     die "Unsupported distro: ${ID}"
   fi
 
@@ -206,7 +206,7 @@ install_software_linux() {
 
 install_software_linux_ubuntu() {
   detail "Update" "pulling the latest packages"
-  "${dotfiles_dir}/bin/update"
+  "${dotfiles_dir}/bin/update" >/dev/null 2>&1
 
   local p
   local packages=(
