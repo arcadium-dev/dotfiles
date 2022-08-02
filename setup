@@ -317,13 +317,14 @@ install_go() {
     return
   fi
 
+  set -x
   local gover="curl https://go.dev/VERSION?m=text"
   local arch="arm64"
   if [[ "$(uname -m)" == "x86_64" ]]; then
     arch="amd64"
   fi
 
-  curl -O "${HOME}/Downloads" https://go.dev/dl/go${gover}.${os}-${arch}.tar.gz
+  curl -sSL https://go.dev/dl/go${gover}.${os}-${arch}.tar.gz --output "${HOME}/Downloads" 
 }
 
 
