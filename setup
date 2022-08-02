@@ -69,16 +69,17 @@ gather_user_input() {
 
   info "Gathering user information"
 
-  printf "%-45s > " "Enter you full name (e.g. Bob Jones)"
+  printf "\n%-45s > " "Enter you full name (e.g. Bob Jones)"
   read name
 
-  printf "%-s\n%-s\n%-45s > " \
+  printf "\n%-s\n%-s\n%-s\n%-45s > " \
     "Enter your github email address" \
-    "  See: https://github.com/settings/emails / Primary email address" \
+    "  See: https://github.com/settings/emails" \
+    "       Keep my email addresses private" \
     "  I.e <number>+<user>@users.noreply.github.com"
   read email
 
-  printf "%-45s > " "Enter your timezone (default: ${default_tz})"
+  printf "\n%-45s > " "Enter your timezone (default: ${default_tz})"
   read tz
 
   echo "export NAME=\"${name}\""   >  "${HOME}/.profile.d/01_user_info.sh"
