@@ -315,14 +315,13 @@ install_go() {
 
   info "Installing go"
 
-  local gover="$(curl https://go.dev/VERSION?m=text)"
+  local gover="$(curl https://go.dev/VERSION?m=text 2>/dev/null)"
 
   if [[ -d "/usr/local/${gover}" ]]; then
     msg "go already installed, skipping..."
     return
   fi
 
-  local gover="$(curl https://go.dev/VERSION?m=text)"
   local arch="arm64"
   if [[ "$(uname -m)" == "x86_64" ]]; then
     arch="amd64"
