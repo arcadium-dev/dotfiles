@@ -201,7 +201,8 @@ install_sudoers() {
     return
   fi
 
-  echo "${USER} ALL=(ALL:ALL) NOPASSWD: ALL" | sudo tee "${sudoers_file}" >/dev/null 2>&1
+  echo "Defaults:USER timestamp_timeout=0" | sudo tee "/etc/sudoers.d/default_timeout" >/dev/null 2>&1
+  echo "${USER}		ALL=(ALL:ALL) NOPASSWD: ALL" | sudo tee "${sudoers_file}" >/dev/null 2>&1
 
   success
 }
@@ -209,7 +210,7 @@ install_sudoers() {
 uninstall_sudoers() {
   info "Removing sudoers file"
 
-  sudo rm -f "/etc/sudoers.d/${USER}"
+  sudo rm -f "/etc/sudoers.d/${USER}" "/etc/sudoers.d/default_timeout"
 
   success
 }
@@ -354,6 +355,7 @@ install_tmux_config() {
 
   if [[ -d "${HOME}/.tmux" ]]; then
     msg "tmux config already installed, skipping..."
+    return
   fi
 
   mkdir -p "${HOME}/.tmux"
@@ -384,10 +386,7 @@ install_terminator_config() {
   fi
 
   mkdir -p "${HOME}/.config/terminator"
-  #mkdir -p ~"${HOME}/.gnome/apps"
-
   ln -sf "${dotfiles_dir}/.config/terminator/config" "${HOME}/.config/terminator/config"
-  #ln -sf "${dotfiles_dir}/.files/.gnome/apps/terminator.desktop" "${HOME}/.gnome/apps/terminator.desktop"
 
   success
 }
