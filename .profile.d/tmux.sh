@@ -1,3 +1,5 @@
+export TMUX_TMPDIR="${HOME}/.tmux
+
 set_title() {
   local title="$@"
   title="${title:0:32}"

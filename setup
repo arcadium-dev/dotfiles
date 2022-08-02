@@ -254,6 +254,7 @@ setup_sofware_darwin() {
     "bash"
     "coreutils"
     "curl"
+    "ctags"
     "direnv"
     "git"
     "go"
@@ -291,6 +292,7 @@ setup_software_linux_ubuntu() {
   local packages=(
     "apt-file"
     "build-essential"
+    "exuberant-ctags"
     "direnv"
     "docker.io"
     "docker-compose"

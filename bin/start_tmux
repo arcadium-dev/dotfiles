@@ -1,7 +1,4 @@
-#!/bin/bash
-#set -x
-
-export TMUX_TMPDIR="$HOME/.tmux"
+#!/usr/bin/env bash
 
 function main() {
   local name="$(basename $0)"
