@@ -317,7 +317,7 @@ install_go() {
 
   local gover="$(curl https://go.dev/VERSION?m=text)"
 
-  if [[ -f "/usr/local/${gover}" ]]; then
+  if [[ -d "/usr/local/${gover}" ]]; then
     msg "go already installed, skipping..."
     return
   fi
