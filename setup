@@ -308,48 +308,16 @@ install_software_linux_ubuntu() {
   success
 }
 
-#_____________ go _____________
-
-install_go() {
-  if [[ "${os}" != "linux" ]]; then return; fi
-
-  info "Installing go"
-
-  local gover="$(curl https://go.dev/VERSION?m=text 2>/dev/null)"
-
-  if [[ -d "/usr/local/${gover}" ]]; then
-    go version
-    return
-  fi
-
-  local arch="arm64"
-  if [[ "$(uname -m)" == "x86_64" ]]; then
-    arch="amd64"
-  fi
-  local pkg="${gover}.${os}-${arch}.tar.gz"
-
-  curl -sSL "https://go.dev/dl/${pkg}" --output "${HOME}/Downloads/${pkg}" >/dev/null 2>&1
-  sudo rm -f /usr/local/go
-  sudo tar -C /usr/local -xzf "${HOME}/Downloads/${pkg}"
-  sudo mv /usr/local/go "/usr/local/${gover}"
-  sudo ln -sf "/usr/local/${gover}" /usr/local/go
-  /usr/local/go/bin/go version
-
-  success
-}
-
 #_____________ fly _____________
 
 install_fly() {
   info "Install fly"
 
   if [[ -d "${HOME}/.fly" ]]; then
-    flyctl version
     return
   fi
 
   curl -L https://fly.io/install.sh 2>/dev/null | sh &>/dev/null
-  fly version
 
   success
 }
@@ -560,7 +528,6 @@ install() {
   install_git_config
   install_sudoers
   install_software_packages
-  install_go
   install_fly
   install_tmux_config
   install_terminator_config
@@ -568,6 +535,8 @@ install() {
   install_docker
   install_ssh_config
   install_source_code
+
+  versions
 }
 
 uninstall() {
@@ -580,6 +549,13 @@ uninstall() {
   uninstall_sudoers
   uninstall_git_config
   uninstall_shell_environment
+}
+
+versions() {
+  git version
+  go version
+  flyctl version
+  docker version
 }
 
 #_____________ main _____________
