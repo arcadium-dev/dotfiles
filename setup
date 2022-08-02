@@ -333,6 +333,7 @@ install_fly() {
   fi
 
   curl -L https://fly.io/install.sh 2>/dev/null | sh &>/dev/null
+  fly version
 
   success
 }
@@ -444,6 +445,31 @@ uninstall_fonts() {
   success
 }
 
+#_____________ source code _____________
+
+install_source_code() {
+  info "Install source code"
+
+  local arcadium="${HOME}/src/arcadium.dev"
+
+  local r
+  local repos=(
+    "arcade"
+    "core"
+  )
+
+  for r in "${repos[@]}"; do
+    if [[ -d "${arcadium}/${r}" ]]; then
+      msg "${arcadium}/${r} already exists, skipping..."
+      continue
+    fi
+
+    detail "workspace" "${r}"
+    git clone -C "${arcadium}" "git@github.com:arcadium-dev/${r}"
+    direnv allow "${arcadium}/${r}"
+  done
+}
+
 #_____________ install _____________
 
 install() {
@@ -458,6 +484,7 @@ install() {
   install_tmux_config
   install_terminator_config
   install_fonts
+  install_source_code
 }
 
 uninstall() {
