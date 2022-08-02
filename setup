@@ -318,7 +318,7 @@ install_go() {
   fi
 
   set -x
-  local gover="curl https://go.dev/VERSION?m=text"
+  local gover="$(curl https://go.dev/VERSION?m=text)"
   local arch="arm64"
   if [[ "$(uname -m)" == "x86_64" ]]; then
     arch="amd64"
