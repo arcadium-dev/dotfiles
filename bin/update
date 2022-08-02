@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+if [[ "$(uname)" == "Darwin" ]]; then
+  if command -v brew &>/dev/null; then
+    brew update && brew upgrade
+  fi
+  exit $?
+fi
+
+if [[ -f /etc/os-release ]]; then
+  source /etc/os-release
+fi
+
+if command -v apt &>/dev/null; then
+  sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y
+  exit $?
+fi

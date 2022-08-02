@@ -26,6 +26,14 @@ declare -r dotfiles_dir
 source "${dotfiles_dir}/common.sh"
 set +o noglob
 
+declare os
+os="$(uname | tr [A-Z] [a-z])"
+declare -r os
+
+if [[ -f /etc/os-release ]]; then
+  source /etc/os-release
+fi
+
 declare name email github_email tz
 
 #_____________ shell environment _____________
@@ -165,42 +173,55 @@ uninstall_sudoers() {
 
 #_____________ software _____________
 
-# direnv, rg (ripgrep), jq
+install_software_pacakges() {
+  info "Installing software packages"
 
-install_brew() {
-  :
+  if ! type "install_software_${os}"; then
+    die "Unsupported os: ${os}"
+  fi
+
+  "install_software_${os}"
 }
 
 install_sofware_darwin() {
-  # Only install brew on Macs.
-  if ! is_darwin; then return; fi
+  detail  "Installing brew"
 
-  info "Installing brew"
-
-  # Don't install brew if it is already installed.
   if command -v brew >/dev/null 2>&1; then
-    msg "brew already installed"
+    msg "brew already installed, skipping..."
   fi
 
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+  detail "Update" "pulling the latest packages"
+  "${dotfiles_dir}/bin/update"
 }
 
-uninstall_software() {
-  :
-}
-
-uninstall_software_darwin() {
-  # Only uninstall brew on Macs.
-  if ! is_darwin; then return; fi
-
-  info "Uninstalling brew"
-
-  # Don't uninstall brew if it is already installed.
-  if ! command -v brew >/dev/null 2>&1; then
-    msg "brew already uninstalled"
+install_software_linux() {
+  if ! type "install_software_linux_${ID}"; then
+    die "Unsupported distro: ${ID}"
   fi
 
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+  "install_software_linux_${ID}"
+}
+
+install_software_linux_ubuntu() {
+  detail "Update" "pulling the latest packages"
+  "${dotfiles_dir}/bin/update"
+
+  local p
+  local packages=(
+    "direnv"
+    "jq"
+    "ripgrep"
+    "tmux"
+  )
+
+  for p in "${packages[@]}"; do
+    detail "Installing package" "${p}"
+    if ! sudo apt install -y ${p} >/dev/null 2>&1; then
+      failed
+    fi
+  done
 }
 
 #_____________ go _____________
@@ -236,14 +257,13 @@ install() {
   gather_user_input
   install_git_config
   install_sudoers
-  #install_brew
+  install_software_packages
 }
 
 uninstall() {
   uninstall_shell_environment
   uninstall_git_config
   uninstall_sudoers
-  #uninstall_brew
 }
 
 #_____________ main _____________
