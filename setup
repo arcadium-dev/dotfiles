@@ -532,7 +532,7 @@ install() {
   install_tmux_config
   install_terminator_config
   install_fonts
-  install_docker
+  install_docker_group
   install_ssh_config
   install_source_code
 
@@ -541,7 +541,7 @@ install() {
 
 uninstall() {
   uninstall_ssh_config
-  uninstall_docker
+  uninstall_docker_group
   uninstall_fonts
   uninstall_terminator_config
   uninstall_tmux_config
