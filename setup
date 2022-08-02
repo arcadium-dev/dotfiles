@@ -149,7 +149,7 @@ install_sudoers() {
     msg "${sudoers_file} already exists, skipping..."
   fi
 
-  sudo " echo \"${USER} ALL=(ALL:ALL) NOPASSWD: ALL\" > ${sudoers_file}" 
+  echo "${USER} ALL=(ALL:ALL) NOPASSWD: ALL" | sudo tee "${sudoers_file}" >/dev/null 2>&1
 
   success
 }
