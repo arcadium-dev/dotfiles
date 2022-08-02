@@ -311,8 +311,6 @@ install_software_linux_ubuntu() {
 
 # uname -s, uname -m
 
-#_____________ tmux _____________
-
 #_____________ vim _____________
 
 #_____________ vundle _____________
@@ -327,12 +325,41 @@ install_software_linux_ubuntu() {
 
 # For bin/agent, ensure that .ssh exists and the permissions are set to 700.
 
+#_____________ tmux _____________
+
+install_tmux_config() {
+  info "Install tmux config"
+
+  if [[ -d "${HOME}/.tmux" ]]; then
+    msg "tmux config already installed, skipping..."
+  fi
+
+  mkdir -p "${HOME}/.tmux"
+  ln -sf "${dotfiles_dir}/.tmux.conf" "${HOME}/.tmux.conf"
+
+  success
+}
+
+uninstall_tmux_config() {
+  info "Removing tmux config"
+
+  rm -rf "${HOME}/.tmux"
+  rm -f "${HOME}/.tmux.conf"
+
+  success
+}
+
 #_____________ terminator _____________
 
 install_terminator_config() {
   if [[ "${os}" != "linux" ]]; then return; fi
 
   info "Installing terminator config"
+
+  if [[ -d "${HOME}/.config/terminator" ]]; then
+    msg "terminator config already installed, skipping..."
+    return
+  fi
 
   mkdir -p "${HOME}/.config/terminator"
   #mkdir -p ~"${HOME}/.gnome/apps"
@@ -378,7 +405,9 @@ install_fonts() {
     ln -sf "${i}" "${HOME}/.fonts/$(basename "${i}")"
   done
   if type fc-cache &>/dev/null; then
-    fc-cache -v
+    if ! fc-cache -v &>/dev/null; then
+      failed
+    fi
   fi
 
   success
@@ -403,6 +432,7 @@ install() {
   install_sudoers
   install_software_packages
 
+  install_tmux_config
   install_terminator_config
   install_fonts
 }
@@ -412,6 +442,7 @@ uninstall() {
   uninstall_git_config
   uninstall_sudoers
 
+  uninstall_tmux_config
   uninstall_terminator_config
   uninstall_fonts
 }
