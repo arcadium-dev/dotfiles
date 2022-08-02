@@ -31,9 +31,9 @@ os="$(uname | tr [A-Z] [a-z])"
 declare -r os
 
 declare name email github_email editor tz
-declare -r default_name="${NAME:-}" 
-declare -r default_email="${EMAIL:-}" 
-declare -r default_github_email="${GITHUB_EMAIL:-}" 
+declare -r default_name="${NAME:-}"
+declare -r default_email="${EMAIL:-}"
+declare -r default_github_email="${GITHUB_EMAIL:-}"
 declare -r default_editor="${EDITOR:-code}"
 declare -r default_tz="${TZ:-America/Denver}"
 
@@ -355,6 +355,45 @@ uninstall_terminator_config() {
 
 #_____________ fonts _____________
 
+install_fonts() {
+  info "Installing fonts"
+
+  if [[ "${os}" == "Darwin" ]]; then
+    if ! cp -f "${HOME}"/.files/.fonts/* "${HOME}/Library/Fonts/"; then
+      failed
+    fi
+    success
+    return
+  fi
+
+  if [[ -d "${HOME}/.fonts" ]]; then
+    msg "fonts already installed, skipping..."
+    return
+  fi
+
+  mkdir -p "${HOME}/.fonts"
+
+  local i
+  for i in ${dotfiles_dir}/.fonts/*; do
+    ln -sf "${i}" "${HOME}/.fonts/$(basename "${i}")"
+  done
+  if type fc-cache &>/dev/null; then
+    fc-cache -v
+  fi
+
+  success
+}
+
+uninstall_fonts() {
+  if [[ "${os}" == "Darwin" ]]; then return; fi
+
+  info "Removing fonts"
+
+  rm -rf "${HOME}/.fonts"
+
+  success
+}
+
 #_____________ install _____________
 
 install() {
@@ -365,6 +404,7 @@ install() {
   install_software_packages
 
   install_terminator_config
+  install_fonts
 }
 
 uninstall() {
@@ -373,6 +413,7 @@ uninstall() {
   uninstall_sudoers
 
   uninstall_terminator_config
+  uninstall_fonts
 }
 
 #_____________ main _____________
