@@ -92,7 +92,7 @@ uninstall_shell_environment() {
   rm -rf "${HOME}/bin"
 
   # ... sigh ...
-  chmod -R u+x "${HOME}/pkg"
+  chmod -fR u+x "${HOME}/pkg"
   rm -rf "${HOME}/pkg"
 
   success
@@ -456,7 +456,7 @@ uninstall_docker_group() {
 
   info "Removing docker group"
 
-  sudo gpasswd -d "${USER}" docker
+  sudo gpasswd -d "${USER}" docker || true
 
   success
 }
