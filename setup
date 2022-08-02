@@ -152,7 +152,9 @@ gather_user_input() {
   echo "export GITHUB_EMAIL=\"${github_email}\"" >> "${HOME}/.profile.d/01_user_info.sh"
   echo "export EDITOR=\"${editor}\""             >> "${HOME}/.profile.d/01_user_info.sh"
   echo "export VISUAL=\"${editor}\""             >> "${HOME}/.profile.d/01_user_info.sh"
-  echo "export TZ=\"${tz}\""                     >> "${HOME}/.profile.d/01_user_info.sh"
+  if [[ -f "/usr/share/zoneinfo/${tz}" ]]; then
+    echo "export TZ=\"/usr/share/zoneinfo/${tz}\""  >> "${HOME}/.profile.d/01_user_info.sh"
+  fi
 }
 
 #_____________ git config _____________
