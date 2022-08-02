@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+
+source "${HOME}/bin/common.sh"
+
+update_fly() {
+  if ! command -v flyctl &>/dev/null; then
+    return
+  fi
+
+  info "Updating flyctl"
+
+  curl -L https://fly.io/install.sh 2>/dev/null | sh >/dev/null 2>&1
+  flyctl version
+
+  success
+}
+
+update_go() {
+  local os
+  os="$(uname | tr [A-Z] [a-z])"
+
+  if [[ "${os}" != "linux" ]]; then return; fi
+
+  info "Updating go"
+
+  gover="$(curl https://go.dev/VERSION?m=text 2>/dev/null)"
+  if [[ -d "/usr/local/${gover}" ]]; then
+    go version
+    success
+    return
+  fi
+
+  local arch="arm64"
+  if [[ "$(uname -m)" == "x86_64" ]]; then
+    arch="amd64"
+  fi
+  local pkg="${gover}.${os}-${arch}.tar.gz"
+
+  curl -sSL "https://go.dev/dl/${pkg}" --output "${HOME}/Downloads/${pkg}" >/dev/null 2>&1
+  sudo rm -f /usr/local/go
+  sudo tar -C /usr/local -xzf "${HOME}/Downloads/${pkg}"
+  sudo mv /usr/local/go "/usr/local/${gover}"
+  sudo ln -sf "/usr/local/${gover}" /usr/local/go
+  go version
+
+  success
+}
+
+update_vundle() {
+  if [[ ! -d "${HOME}/.vim/bundle/Vundle.vim" ]]; then
+    return
+  fi
+
+  info "Updating vundle"
+
+  local c
+  local commands=(
+    "PluginUpdate"
+    "GoUpdateBinaries"
+  )
+
+  for c in "${commands[@]}"; do
+    detail "Update" "${c}"
+    if ! vim +"${c}" +qall >/dev/null 2>&1; then
+      failed
+    fi
+  done
+
+  success
+}
+
+update_brew() {
+  if ! command -v brew &>/dev/null; then
+    return
+  fi
+
+  info "Updating brew packages"
+
+  brew update && brew upgrade
+
+  success
+}
+
+update_apt() {
+  if ! command -v apt &>/dev/null; then
+    return
+  fi
+
+  info "Updating apt packages"
+
+  sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y
+
+  success
+}
+
+update_fly
+update_go
+update_vundle
+update_brew
+update_apt

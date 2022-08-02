@@ -1,0 +1,641 @@
+#!/usr/bin/env bash
+
+#  Copyright 2022 arcadium.dev <info@arcadium.dev>
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+# To use this tool it is assumed you have installed git, have setup
+# an ssh key with github, and cloned the dotfiles repo.
+
+declare dotfiles_dir
+cd "$(dirname $0)"
+dotfiles_dir="$(pwd -P)"
+cd - >/dev/null 2>&1
+declare -r dotfiles_dir
+
+source "${dotfiles_dir}/common.sh"
+set +o noglob
+
+declare os
+os="$(uname | tr [A-Z] [a-z])"
+declare -r os
+
+declare name email github_email editor tz
+declare -r default_name="${NAME:-}"
+declare -r default_email="${EMAIL:-}"
+declare -r default_github_email="${GITHUB_EMAIL:-}"
+declare -r default_editor="${EDITOR:-code}"
+declare -r default_tz="${TZ:-America/Denver}"
+
+if [[ -f /etc/os-release ]]; then
+  source /etc/os-release
+fi
+
+#_____________ shell environment _____________
+
+install_shell_environment() {
+  info "Setting up bash environment"
+
+  local i d
+  for i in .bash_profile .bashrc; do
+    ln -sf "${dotfiles_dir}/${i}" "${HOME}/${i}"
+  done
+
+  mkdir -p "${HOME}/.rc.d"
+  mkdir -p "${HOME}/.profile.d"
+  mkdir -p "${HOME}/.projects.d"
+  mkdir -p "${HOME}/bin"
+  mkdir -p "${HOME}/pkg"
+  mkdir -p "${HOME}/src/arcadium.dev"
+
+  mkdir -p "${HOME}/Desktop"
+  mkdir -p "${HOME}/Documents"
+  mkdir -p "${HOME}/Downloads"
+  mkdir -p "${HOME}/Pictures"
+
+  for i in "${dotfiles_dir}"/.rc.d/*; do
+    ln -sf "${i}" "${HOME}/.rc.d/$(basename "${i}")"
+  done
+  for i in "${dotfiles_dir}"/.profile.d/*; do
+    ln -sf "${i}" "${HOME}/.profile.d/$(basename "${i}")"
+  done
+  for i in ${dotfiles_dir}/.projects.d/*; do
+    ln -sf "${i}" "${HOME}/.projects.d/$(basename "${i}")"
+  done
+  for i in ${dotfiles_dir}/bin/*; do
+    ln -sf "${i}" "${HOME}/bin/$(basename "${i}")"
+  done
+
+  ln -sf "${dotfiles_dir}/common.sh" "${HOME}/bin/common.sh"
+
+  success
+}
+
+uninstall_shell_environment() {
+  info "Removing shell environment"
+
+  rm -f "${HOME}/.bash_profile"
+  rm -f "${HOME}/.bashrc"
+  rm -rf "${HOME}/.rc.d"
+  rm -rf "${HOME}/.profile.d"
+  rm -rf "${HOME}/.projects.d"
+  rm -rf "${HOME}/bin"
+
+  # ... sigh ...
+  chmod -fR u+x "${HOME}/pkg"
+  rm -rf "${HOME}/pkg"
+
+  success
+}
+
+#_____________ user input _____________
+
+gather_user_input() {
+  info "Gathering user information"
+
+  if [[ -f "${HOME}/.profile.d/01_user_info.sh" ]]; then
+    msg "User information already exists, skipping..."
+    return
+  fi
+
+  printf "\n%-s\n%-s\n> " \
+    "Enter you full name" \
+    "  Default: '${default_name}'"
+  read name
+  if [[ "${name}" == "" ]]; then
+    name="${default_name}"
+  fi
+
+  printf "\n%-s\n%-s\n> " \
+    "Enter your arcadium.dev email" \
+    "  Default: '${default_email}'"
+  read email
+  if [[ "${email}" == "" ]]; then
+    email="${default_email}"
+  fi
+
+  printf "\n%-s\n%-s\n%-s\n%-s\n%-s\n> " \
+    "Enter your github email address" \
+    "  See: https://github.com/settings/emails" \
+    "       Keep my email addresses private" \
+    "  I.e <number>+<user>@users.noreply.github.com" \
+    "  Default: '${default_github_email}"
+  read github_email
+  if [[ "${github_email}" == "" ]]; then
+    github_email="${default_github_email}"
+  fi
+
+  printf "\n%-s\n%-s\n> " \
+    "Preferred editor (vim, code)" \
+    "  Default: ${default_editor}"
+  read editor
+  if [[ "${editor}" == "" ]]; then
+    editor="${default_editor}"
+  fi
+
+  printf "\n%-s\n%-s\n> " \
+    "Enter your timezone" \
+    "  Default: ${default_tz}"
+  read tz
+  if [[ "${tz}" == "" ]]; then
+    tz="${default_tz}"
+  fi
+
+  echo "export NAME=\"${name}\""                 >  "${HOME}/.profile.d/01_user_info.sh"
+  echo "export EMAIL=\"${email}\""               >> "${HOME}/.profile.d/01_user_info.sh"
+  echo "export GITHUB_EMAIL=\"${github_email}\"" >> "${HOME}/.profile.d/01_user_info.sh"
+  echo "export EDITOR=\"${editor}\""             >> "${HOME}/.profile.d/01_user_info.sh"
+  echo "export VISUAL=\"${editor}\""             >> "${HOME}/.profile.d/01_user_info.sh"
+  if [[ -f "/usr/share/zoneinfo/${tz}" ]]; then
+    echo "export TZ=\"/usr/share/zoneinfo/${tz}\""  >> "${HOME}/.profile.d/01_user_info.sh"
+  fi
+}
+
+#_____________ git config _____________
+
+install_git_config() {
+  info "Setting up .gitconfig"
+
+  if [[ -f "${HOME}/.gitconfig" ]]; then
+    msg ".gitconfig already exists, skipping..."
+    return
+  fi
+
+  cp -f  "${dotfiles_dir}/.gitconfig" "${HOME}/.gitconfig"
+  ln -sf "${dotfiles_dir}/.gitignore_global" "${HOME}/.gitignore_global"
+
+  git config --global user.name "${name}"
+  git config --global user.email "${github_email}"
+  git config --global core.editor "${editor}"
+  git config --global core.excludesfile "${HOME}/.gitignore_global"
+
+  success
+}
+
+uninstall_git_config() {
+  info "Removing git config"
+
+  rm -f "${HOME}/.gitconfig"
+  rm -f "${HOME}/.gitignore_global"
+
+  success
+}
+
+#_____________ sudo _____________
+
+install_sudoers() {
+  local sudoers_file="/etc/sudoers.d/${USER}"
+
+  info "Setting up ${sudoers_file}"
+
+  if sudo -n test -f "${sudoers_file}" >/dev/null 2>&1; then
+    msg "${sudoers_file} already exists, skipping..."
+    return
+  fi
+
+  echo "Defaults:USER timestamp_timeout=0" | sudo tee "/etc/sudoers.d/default_timeout" >/dev/null 2>&1
+  echo "${USER}		ALL=(ALL:ALL) NOPASSWD: ALL" | sudo tee "${sudoers_file}" >/dev/null 2>&1
+
+  success
+}
+
+uninstall_sudoers() {
+  info "Removing sudoers file"
+
+  sudo rm -f "/etc/sudoers.d/${USER}" "/etc/sudoers.d/default_timeout"
+
+  success
+}
+
+#_____________ software _____________
+
+setup_software_packages() {
+  info "Installing software packages"
+
+  if ! type "setup_software_${os}" >/dev/null 2>&1; then
+    die "Unsupported os: ${os}"
+  fi
+
+  "setup_software_${os}"
+}
+
+setup_sofware_darwin() {
+  #detail "Installing xode tools"
+
+  #xcode-select --install
+  #xcode-select -p
+
+  detail  "Installing brew"
+
+  if command -v brew >/dev/null 2>&1; then
+    msg "brew already installed, skipping..."
+  fi
+
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  brew doctor
+
+  # TODO: How to update the PATH
+
+  detail "Update" "pulling the latest packages"
+  "${dotfiles_dir}/bin/update" >/dev/null 2>&1
+
+  local p
+  local packages=(
+    "bash"
+    "coreutils"
+    "curl"
+    "ctags"
+    "direnv"
+    "git"
+    "go"
+    "jq"
+    "ripgrep"
+    "tmux"
+    "wget"
+  )
+
+  for p in "${packages[@]}"; do
+    detail "Install" "${p}"
+    if ! brew install ${p} >/dev/null 2>&1; then
+      failed
+    fi
+  done
+
+  # TODO: How to change the shell
+
+  success
+}
+
+setup_software_linux() {
+  if ! type "setup_software_linux_${ID}" >/dev/null 2>&1; then
+    die "Unsupported distro: ${ID}"
+  fi
+
+  "setup_software_linux_${ID}"
+}
+
+setup_software_linux_ubuntu() {
+  detail "Update" "pulling the latest packages"
+  "${dotfiles_dir}/bin/update" >/dev/null 2>&1
+
+  local p
+  local packages=(
+    "apt-file"
+    "build-essential"
+    "exuberant-ctags"
+    "direnv"
+    "docker.io"
+    "docker-compose"
+    "jq"
+    "ripgrep"
+    "terminator"
+    "tmux"
+    "wget"
+  )
+
+  for p in "${packages[@]}"; do
+    detail "Install" "${p}"
+    if ! sudo apt install -y ${p} >/dev/null 2>&1; then
+      failed
+    fi
+  done
+
+  success
+}
+
+#_____________ fly _____________
+
+install_fly() {
+  info "Install fly"
+
+  if [[ -d "${HOME}/.fly" ]]; then
+    return
+  fi
+
+  curl -L https://fly.io/install.sh 2>/dev/null | sh &>/dev/null
+
+  success
+}
+
+uninstall_fly() {
+  info "Removing fly"
+
+  rm -f "${HOME}/bin/flyctl" "${HOME}/bin/fly"
+  rm -rf "${HOME}/.fly"
+
+  success
+}
+
+#_____________ tmux _____________
+
+install_tmux_config() {
+  info "Install tmux config"
+
+  if [[ -d "${HOME}/.tmux" ]]; then
+    msg "tmux config already installed, skipping..."
+    return
+  fi
+
+  mkdir -p "${HOME}/.tmux"
+  ln -sf "${dotfiles_dir}/.tmux.conf" "${HOME}/.tmux.conf"
+
+  success
+}
+
+uninstall_tmux_config() {
+  info "Removing tmux config"
+
+  rm -rf "${HOME}/.tmux"
+  rm -f "${HOME}/.tmux.conf"
+
+  success
+}
+
+#_____________ terminator _____________
+
+install_terminator_config() {
+  if [[ "${os}" != "linux" ]]; then return; fi
+
+  info "Installing terminator config"
+
+  if [[ -d "${HOME}/.config/terminator" ]]; then
+    msg "terminator config already installed, skipping..."
+    return
+  fi
+
+  mkdir -p "${HOME}/.config/terminator"
+  ln -sf "${dotfiles_dir}/.config/terminator/config" "${HOME}/.config/terminator/config"
+
+  success
+}
+
+uninstall_terminator_config() {
+  if [[ "${os}" != "linux" ]]; then return; fi
+
+  info "Installing terminator config"
+
+  rm -rf "${HOME}/.config/terminator"
+
+  success
+}
+
+#_____________ fonts _____________
+
+install_fonts() {
+  info "Installing fonts"
+
+  if [[ "${os}" == "darwin" ]]; then
+    if ! cp -f "${HOME}"/.files/.fonts/* "${HOME}/Library/Fonts/"; then
+      failed
+    fi
+    success
+    return
+  fi
+
+  if [[ -d "${HOME}/.fonts" ]]; then
+    msg "fonts already installed, skipping..."
+    return
+  fi
+
+  mkdir -p "${HOME}/.fonts"
+
+  local i
+  for i in ${dotfiles_dir}/.fonts/*; do
+    ln -sf "${i}" "${HOME}/.fonts/$(basename "${i}")"
+  done
+  if type fc-cache &>/dev/null; then
+    if ! fc-cache -v &>/dev/null; then
+      failed
+    fi
+  fi
+
+  success
+}
+
+uninstall_fonts() {
+  if [[ "${os}" == "darwin" ]]; then return; fi
+
+  info "Removing fonts"
+
+  rm -rf "${HOME}/.fonts"
+
+  success
+}
+
+#_____________ docker _____________
+
+install_docker_group() {
+  if [[ "${os}" != "linux" ]]; then return; fi
+
+  info "Setting up docker group"
+
+  if grep -q "^docker:.*${USER}" /etc/group; then
+    msg "docker group already setup, skipping..."
+    return
+  fi
+
+  if ! sudo gpasswd -a "${USER}" docker; then
+    failed
+  fi
+
+  success
+}
+
+uninstall_docker_group() {
+  if [[ "${os}" != "linux" ]]; then return; fi
+
+  info "Removing docker group"
+
+  sudo gpasswd -d "${USER}" docker || true
+
+  success
+}
+
+#_____________ ssh _____________
+
+setup_ssh() {
+  info "Setting up ssh"
+
+  mkdir -p "${HOME}/.ssh"
+  chmod -f 0700 "${HOME}"/.ssh/id_*
+  chmod -f 0644 "${HOME}"/.ssh/id_*.pub
+
+  success
+}
+
+#_____________ vim _____________
+
+install_vim() {
+  info "Setup vim config"
+
+  mkdir -p "${HOME}/.vim/colors"
+  mkdir -p "${HOME}/.vim/swapfiles"
+
+  ln -sf "${dotfiles_dir}/.vimrc" "${HOME}/.vimrc"
+  ln -sf "${dotfiles_dir}/.vim/colors/arcadium.vim" "${HOME}/.vim/colors/arcadium.vim"
+
+  success
+}
+
+uninstall_vim() {
+  info "Removing vim config"
+
+  rm -rf "${HOME}/.vim"
+  rm -f "${HOME}/.vimrc"
+
+  success
+}
+
+#_____________ vundle _____________
+
+install_vundle() {
+  info "Installing vundle"
+
+  if [[ -d "${HOME}/.vim/bundle/Vundle.vim" ]]; then
+    msg "vundle already installed, skipping..."
+    return
+  fi
+
+  mkdir -p "${HOME}/.vim/bundle"
+
+  if ! git clone https://github.com/VundleVim/Vundle.vim.git "${HOME}/.vim/bundle/Vundle.vim" >/dev/null 2>&1; then
+    failed
+  fi
+
+  local c
+  local commands=(
+    "PluginInstall"
+    "GoInstallBinaries"
+  )
+
+  for c in "${commands[@]}"; do
+    detail "Install" "${c}"
+    if ! vim +"${c}" +qall >/dev/null 2>&1; then
+      failed
+    fi
+  done
+
+  success
+}
+
+uninstall_vundle() {
+  info "Removing vundle"
+
+  rm -rf "${HOME}/.vim/bundle"
+
+  success
+}
+
+
+#_____________ source code _____________
+
+install_source_code() {
+  info "Install source code"
+
+  local arcadium="${HOME}/src/arcadium.dev"
+
+  local r
+  local repos=(
+    "arcade"
+    "core"
+  )
+
+  for r in "${repos[@]}"; do
+    if [[ -d "${arcadium}/${r}" ]]; then
+      msg "${arcadium}/${r} already exists, skipping..."
+      continue
+    fi
+
+    detail "Workspace" "${r}"
+    if ! git -C "${arcadium}" clone "git@github.com:arcadium-dev/${r}" >/dev/null 2>&1; then
+      failed
+    fi
+    if !  direnv allow "${arcadium}/${r}"; then
+      failed
+    fi
+  done
+
+  success
+}
+
+#_____________ install _____________
+
+install() {
+  install_shell_environment
+  gather_user_input
+  install_git_config
+  install_sudoers
+  setup_software_packages
+  install_fly
+  install_tmux_config
+  install_terminator_config
+  install_fonts
+  install_docker_group
+  setup_ssh
+  install_vim
+  install_vundle
+  install_source_code
+
+  versions
+}
+
+uninstall() {
+  uninstall_vundle
+  uninstall_vim
+  uninstall_docker_group
+  uninstall_fonts
+  uninstall_terminator_config
+  uninstall_tmux_config
+  uninstall_fly
+  uninstall_sudoers
+  uninstall_git_config
+  uninstall_shell_environment
+}
+
+versions() {
+  info "Software versions"
+
+  git version
+  go version
+  flyctl version
+
+  # ... sigh ...
+  docker version -f "docker version {{.Client.Version}}" 2>/dev/null || true 
+  echo "docker-compose $(docker-compose version --short)"
+}
+
+#_____________ main _____________
+
+main() {
+  if [[ ! -d "${HOME}/.files" ]]; then
+    echo "The arcadium.dev/dotfiles repo must be cloned to the ${HOME}/.files directory."
+    echo ""
+    echo "  i.e. git clone git@github.com:arcadium-dev/dotfiles ${HOME}/.files"
+    echo ""
+    exit 1
+  fi
+
+  if [[ "${dotfiles_dir}" != "${HOME}/.files" ]]; then
+    echo "The arcadium.dev/dotfiles/setup script must be called from ${HOME}/.files/setup"
+    exit 1
+  fi
+
+  if [[ "${1:-}" == "uninstall" ]]; then
+    uninstall
+    return $?
+  fi
+
+  install
+}
+
+main "$@"

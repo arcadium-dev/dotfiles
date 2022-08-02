@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+if [[ "$debug" == "yes" ]]; then set -x; fi
+
+declare hostname="${hostname:-$(hostname)}"
+
+is_alive() {
+  return $(kill -s 0 $1 &>/dev/null)
+}
+
+start_ssh_agent() {
+  local ssh_agent_file="$1"
+
+  if [[ -f $ssh_agent_file ]]; then
+    source $ssh_agent_file
+  fi
+  if [[ -n $SSH_AGENT_PID ]] && is_alive $SSH_AGENT_PID; then
+    echo "Reusing ssh-agent ($SSH_AGENT_PID)"
+    return
+  fi
+  ssh-agent | egrep -v "^echo "  > $ssh_agent_file
+  source $ssh_agent_file
+  echo "Starting ssh-agent ($SSH_AGENT_PID)"
+}
+
+kill_ssh_agent() {
+  local ssh_agent_file="$1"
+
+  if [[ ! -f $ssh_agent_file ]]; then
+    return
+  fi
+  source $ssh_agent_file
+  if is_alive $SSH_AGENT_PID; then
+    echo "Killing ssh-agent ($SSH_AGENT_PID)"
+    ssh-agent -k
+    rm -f $ssh_agent_file
+  fi
+}
+
+main() {
+  local ssh_agent_file="$HOME/.ssh/agent.$hostname"
+
+  if [[ "$1" == "kill" ]]; then
+    kill_ssh_agent $ssh_agent_file
+  else
+    start_ssh_agent $ssh_agent_file
+  fi
+}
+
+main "$@"

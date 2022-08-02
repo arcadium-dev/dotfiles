@@ -1,0 +1,2 @@
+#!/bin/bash
+printf "%sx%s\n" $(tput cols) $(tput lines)
