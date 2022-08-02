@@ -261,7 +261,7 @@ setup_sofware_darwin() {
   )
 
   for p in "${packages[@]}"; do
-    detail "Installing package" "${p}"
+    detail "Install" "${p}"
     if ! brew install ${p} >/dev/null 2>&1; then
       failed
     fi
@@ -299,7 +299,7 @@ setup_software_linux_ubuntu() {
   )
 
   for p in "${packages[@]}"; do
-    detail "Installing package" "${p}"
+    detail "Install" "${p}"
     if ! sudo apt install -y ${p} >/dev/null 2>&1; then
       failed
     fi
@@ -507,12 +507,12 @@ install_vundle() {
     failed
   fi
 
-  detail "install" "plugins"
+  detail "Install" "plugins"
   if ! vim +PluginInstall +qall >/dev/null 2>&1; then
     failed
   fi
 
-  detail "install" "go binaries"
+  detail "Install" "go binaries"
   if ! vim +GoInstallBinaries +qall >/dev/null 2>&1; then
     failed
   fi
@@ -548,7 +548,7 @@ install_source_code() {
       continue
     fi
 
-    detail "workspace" "${r}"
+    detail "Workspace" "${r}"
     if ! git -C "${arcadium}" clone "git@github.com:arcadium-dev/${r}" >/dev/null 2>&1; then
       failed
     fi
@@ -595,10 +595,12 @@ uninstall() {
 }
 
 versions() {
+  info "Software versions"
+
   git version
   go version
   flyctl version
-  docker version
+  echo -n "docker " &&  docker version
 }
 
 #_____________ main _____________
