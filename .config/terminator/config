@@ -31,6 +31,7 @@
     palette = "#000000:#cd0000:#00cd00:#cdcd00:#0000cd:#cd00cd:#00cdcd:#faebd7:#404040:#ff0000:#00ff00:#ffff00:#0000ff:#ff00ff:#00ffff:#ffffff"
     login_shell = True
   [[arcadium]]
+    background_color = "#181818"
     cursor_color = "#8ae234"
     cursor_color_fg = False
     font = Go Mono Semi-Bold 9
@@ -38,7 +39,7 @@
     show_titlebar = False
     scrollbar_position = hidden
     scrollback_infinite = True
-    palette = "#2e3436:#e83400:#00cd00:#ffff00:#4060ff:#cd00cd:#00cdcd:#ffffff:#404040:#e83400:#00ff00:#ffff00:#6394ff:#e89ee9:#00ffff:#ffffff"
+    palette = "#000000:#e83400:#00cd00:#ffff00:#4060ff:#cd00cd:#00cdcd:#ffffff:#404040:#e83400:#00ff00:#ffff00:#6394ff:#e89ee9:#00ffff:#ffffff"
     login_shell = True
     use_system_font = False
     copy_on_selection = True
