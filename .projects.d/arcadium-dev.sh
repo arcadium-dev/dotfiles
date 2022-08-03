@@ -1,4 +1,4 @@
-# arcadium shutcuts
+# arcadium shortcuts
 export _arcadium_="${_src_}/arcadium.dev"
 
 # source code
