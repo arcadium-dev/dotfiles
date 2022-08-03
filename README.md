@@ -22,22 +22,7 @@ Create `/etc/wsl.conf` below.
 ### /etc/wsl.conf
 
 ```
-[automount]
-enabled=false
-root=//wsl.localhost/Ubuntu-20.04.01/home/icahoon
-
 [network]
 hostname = arcade1
-generateHosts = false
-generateResolvConf = false
-
-[interop]
-enabled = false
-appendWindowsPath = false
-
-[user]
-default=icahoon
-
-[boot]
-command = service docker start
+generateResolvConf = true
 ```
