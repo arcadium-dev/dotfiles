@@ -10,7 +10,7 @@ fi
 load_profiles() {
   local i files
 
-  LANG=C files="${HOME}/.profile.d/*.sh"
+  files="${HOME}/.profile.d/*.sh"
 
   for i in ${files}; do
     if [[ -r "${i}" ]]; then

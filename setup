@@ -79,7 +79,7 @@ install_shell_environment() {
   ln -sf "${dotfiles_dir}/common.sh" "${HOME}/bin/common.sh"
 
   source "${HOME}/.bashrc"
-  source "${HOME}/.profile.d/path.sh"
+  source "${HOME}/.profile.d/10_path.sh"
 
   success
 }
@@ -232,16 +232,18 @@ setup_software_packages() {
   "setup_software_${os}"
 }
 
-setup_sofware_darwin() {
-  #detail "Installing xode tools"
+setup_software_darwin() {
+  detail "\nInstalling xcode tools"
 
-  #xcode-select --install
-  #xcode-select -p
+  if xcode-select --install; then
+    xcode-select -p
+  fi
 
   detail  "Installing brew"
 
   if command -v brew >/dev/null 2>&1; then
     msg "brew already installed, skipping..."
+    return
   fi
 
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -261,6 +263,7 @@ setup_sofware_darwin() {
     "direnv"
     "git"
     "go"
+    "gpg"
     "jq"
     "ripgrep"
     "tmux"

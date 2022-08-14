@@ -36,4 +36,5 @@
 export CLICOLOR=1
 #export LSCOLORS="DxGxBxDxCxEgEdxbxgxcxd"
 #export LSCOLORS="exfxcxdxbxegedabagacad"
-export LSCOLORS="Hxfxcxdxbxegedabagacad"
+export LSCOLORS="excxfxdxDxegedxbagacad"
+#export LSCOLORS="Hxfxcxdxbxegedabagacad"
