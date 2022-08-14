@@ -1,1 +1,3 @@
-export hostname="$(hostname)"
+if [[ "${hostname}" == "" ]];  then
+  export hostname="$(hostname)"
+fi

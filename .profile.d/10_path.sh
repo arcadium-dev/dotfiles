@@ -8,6 +8,7 @@ pathmunge() {
   fi
 }
 
+
 pathmunge $HOME/bin
 pathmunge /usr/local/go/bin
 
@@ -15,4 +16,7 @@ pathmunge /sbin after
 pathmunge /usr/sbin after
 pathmunge /usr/local/sbin after
 
-# TODO: brew path? other mac paths?
+if [[ "$(uname)" == "Darwin" ]]; then
+  pathmunge /opt/homebrew/sbin
+  pathmunge /opt/homebrew/bin
+fi
