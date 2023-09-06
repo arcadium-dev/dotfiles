@@ -10,7 +10,7 @@ export EDITOR=vim
 export VISUAL=vim
 export TABSTOP=8
 export MORE=
-export LESS="-erQM -x${TABSTOP}"
+export LESS="-erQMf -x${TABSTOP}"
 export PAGER=less
 export EXINIT="set ts=${TABSTOP} sm"
 

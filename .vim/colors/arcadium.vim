@@ -22,6 +22,7 @@ highlight MoreMsg    gui=none guifg=#0090a0 guibg=bg
 highlight Question   gui=none guifg=#8000ff guibg=bg
 
 highlight ColorColumn ctermbg=darkgrey
+highlight SignColumn ctermbg=black
 
 " Split area
 highlight StatusLine   gui=none guifg=#ffffff guibg=#4570aa cterm=bold       ctermbg=blue     ctermfg=white
@@ -59,7 +60,8 @@ highlight Title      gui=none guifg=#0033cc guibg=bg
 highlight Visual     gui=none guifg=#804020 guibg=#ffc0a0 ctermfg=DarkCyan
 
 " Syntax group
-highlight Comment    gui=none guifg=#23256e guibg=bg      ctermfg=Blue
+highlight Comment        gui=none guifg=#23256e guibg=bg      ctermfg=Blue
+highlight SpecialComment gui=none guifg=#23256e guibg=bg      ctermfg=Blue
 highlight Constant   gui=none guifg=#00884c guibg=bg      ctermfg=White
 highlight Error      gui=none guifg=#f8f8f8 guibg=#4040ff ctermbg=Blue    ctermfg=White
 highlight Identifier gui=none guifg=#b07800 guibg=bg      ctermfg=Yellow

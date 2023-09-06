@@ -15,6 +15,9 @@ alias lltest='ls --color -l *_test.go'
 alias vi="vim"
 alias vigo='vi $(lsgo)'
 alias vitest='vi $(lstest)'
+alias rgo='rg -g "*.go"'
+#alias rg='rg -g !*.js -g !*.css -g !*.svg'
+alias rg='rg -g !docs/**'
 
 # Typos
 #----------------------------------

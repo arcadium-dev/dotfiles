@@ -3,7 +3,7 @@ export _arcadium_="${_src_}/arcadium.dev"
 
 # source code
 export _arcade_="${_arcadium_}/arcade"
-export _core_="${_arcadium_}/core"
+export _acore_="${_arcadium_}/core"
 
 # deployments
 export _farcade="${_arcadium_}/fly-arcade"

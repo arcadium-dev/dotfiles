@@ -13,3 +13,6 @@ load_rc() {
 }
 
 load_rc
+
+source /Users/cahooni0808/.docker/init-bash.sh || true # Added by Docker Desktop
+. "$HOME/.cargo/env"
