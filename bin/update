@@ -97,7 +97,7 @@ update_apt() {
 }
 
 update_fly
-update_go
+#update_go
 update_vundle
 update_brew
 update_apt

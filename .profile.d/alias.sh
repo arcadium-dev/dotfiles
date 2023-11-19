@@ -12,7 +12,8 @@ alias lsgo='ls --color -1 *.go | grep -v _test'
 alias lstest='ls --color -1 *_test.go'
 alias llgo='ls --color -l *.go | grep -v _test'
 alias lltest='ls --color -l *_test.go'
-alias vi="vim"
+#alias vi="vim"
+alias vi="nvim"
 alias vigo='vi $(lsgo)'
 alias vitest='vi $(lstest)'
 
