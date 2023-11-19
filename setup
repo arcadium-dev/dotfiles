@@ -290,6 +290,10 @@ setup_software_linux() {
   "setup_software_linux_${ID}"
 }
 
+setup_software_linux_pop() {
+  setup_software_linux_ubuntu
+}
+
 setup_software_linux_ubuntu() {
   detail "Update" "pulling the latest packages"
   "${dotfiles_dir}/bin/update"

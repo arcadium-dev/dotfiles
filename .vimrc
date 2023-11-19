@@ -15,9 +15,9 @@ Plugin 'ekalinin/Dockerfile.vim'
 Plugin 'vim-syntastic/syntastic'
 Plugin 'tpope/vim-fugitive'
 Plugin 'sheerun/vim-polyglot'
-"Plugin 'dense-analysis/ale'
 Plugin 'ludovicchabant/vim-gutentags'
 Plugin 'skywind3000/gutentags_plus'
+Plugin 'dense-analysis/ale'
 "Plugin 'junegunn/fzf'
 "Plugin 'junegunn/fzf.vim'
 "Plugin 'rust-lang/rust.vim'
@@ -84,6 +84,9 @@ set mmp=2000000
 set nobackup
 set noswapfile
 
+set wh=10
+set wmh=10
+
 " Colors
 syntax on
 colorscheme arcadium
@@ -108,26 +111,29 @@ set listchars=tab:\|\ ,trail:·
 highlight SpecialKey ctermfg=DarkGray
 set nolist
 
-"ale settings
-"let g:ale_sign_error = '❌'
-"let g:ale_sign_warning = '⚠️'
-"let g:ale_sign_column_always = 1
-"let g:ale_set_highlights = 1
+" ale settings
+let g:ale_sign_error = '❌'
+let g:ale_sign_warning = '⚠️'
+let g:ale_sign_column_always = 1
+let g:ale_set_highlights = 1
 
-"let g:my_ale_toggle_enabled=1
+let b:ale_linters = {'go': ['staticcheck']}
+let g:ale_linters_explicit = 1
 
-"function! ALEToggle()
-"  if g:my_ale_toggle_enabled
-"    ALEDisable
-"    let g:my_ale_toggle_enabled=0
-"  else
-"    ALEEnable
-"    let g:my_ale_toggle_enabled=1
-"  endif
-"endfunction
+let g:my_ale_toggle_enabled=1
 
-"nmap <silent> [c <Plug>(ale_previous_wrap)
-"nmap <silent> ]c <Plug>(ale_next_wrap)
+function! ALEToggle()
+  if g:my_ale_toggle_enabled
+    ALEDisable
+    let g:my_ale_toggle_enabled=0
+  else
+    ALEEnable
+    let g:my_ale_toggle_enabled=1
+  endif
+endfunction
+
+nmap <silent> [c <Plug>(ale_previous_wrap)
+nmap <silent> ]c <Plug>(ale_next_wrap)
 
 " spelling
 set spell spelllang=en_us
@@ -226,8 +232,8 @@ set cursorline
 highlight CursorLine cterm=None ctermbg=None
 
 " Change Color when entering Insert Mode
-autocmd InsertEnter * highlight CursorLine cterm=None ctermfg=None ctermbg=Black
-"autocmd InsertEnter * highlight CursorLine cterm=underline ctermfg=None
+"autocmd InsertEnter * highlight CursorLine cterm=None ctermfg=None ctermbg=Black
+autocmd InsertEnter * highlight CursorLine cterm=underline ctermfg=None
 
 " Revert Color to default when leaving Insert Mode
 autocmd InsertLeave * highlight CursorLine cterm=None ctermbg=None ctermfg=None
@@ -335,3 +341,5 @@ inoremap <C-J> if err != nil {<cr>return err<cr>}<cr>
 noremap <leader>S :set sessionoptions=buffers<cr>:mksession Session.vim<cr>
 
 noremap <leader>R :SyntasticReset<cr>
+
+noremap <leader>A :ALEToggle<cr>
