@@ -323,6 +323,12 @@ setup_software_linux_ubuntu() {
   success
 }
 
+setup_software_linux_debian() {
+	set -x
+  setup_software_linux_ubuntu
+  	set +x
+}
+
 #_____________ fly _____________
 
 install_fly() {
@@ -628,19 +634,6 @@ versions() {
 #_____________ main _____________
 
 main() {
-  if [[ ! -d "${HOME}/.files" ]]; then
-    echo "The arcadium.dev/dotfiles repo must be cloned to the ${HOME}/.files directory."
-    echo ""
-    echo "  i.e. git clone git@github.com:arcadium-dev/dotfiles ${HOME}/.files"
-    echo ""
-    exit 1
-  fi
-
-  if [[ "${dotfiles_dir}" != "${HOME}/.files" ]]; then
-    echo "The arcadium.dev/dotfiles/setup script must be called from ${HOME}/.files/setup"
-    exit 1
-  fi
-
   if [[ "${1:-}" == "uninstall" ]]; then
     uninstall
     return $?
